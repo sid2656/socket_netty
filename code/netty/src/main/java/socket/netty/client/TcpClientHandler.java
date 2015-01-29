@@ -10,7 +10,7 @@ import java.net.InetSocketAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import socket.netty.msg.MsgQueue;
+import socket.netty.msg.ClientMsgQueue;
 
 
 public class TcpClientHandler extends ChannelInboundHandlerAdapter {
@@ -25,7 +25,7 @@ public class TcpClientHandler extends ChannelInboundHandlerAdapter {
 
 				final byte[] msgbytes = (byte[]) msg;
 				try {
-					MsgQueue.getRecqueue().put(msgbytes);
+					ClientMsgQueue.getRecqueue().put(msgbytes);
 				} catch (InterruptedException e) {
 					logger.error("upa主handler---接收消息队列存储消息失败", e);
 					e.printStackTrace();

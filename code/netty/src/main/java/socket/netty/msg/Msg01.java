@@ -13,7 +13,7 @@ import utils.utils.LogUtil;
  *
  * @author sid
  */
-public class UP_CONNECT_REQ extends AbsMsg {
+public class Msg01 extends AbsMsg {
 
 	private static final long serialVersionUID = 1L;
 	private long userid;
@@ -29,7 +29,7 @@ public class UP_CONNECT_REQ extends AbsMsg {
 
 	@Override
 	protected int getMsgID() {
-		return MessageID.cancellationMsg;
+		return MessageID.ID_0x01;
 	}
 
 
@@ -44,7 +44,7 @@ public class UP_CONNECT_REQ extends AbsMsg {
 			offset+=7;
 			System.arraycopy(Converter.getBytes(this.mac), 0, data, offset, Converter.getBytes(this.mac).length);
 		} catch (Exception e) {
-			LogUtil.getInstance().getLogger(UP_CONNECT_REQ.class).error("登录消息toBytes转换异常",e);
+			LogUtil.getInstance().getLogger(Msg01.class).error("登录消息toBytes转换异常",e);
 			e.printStackTrace();
 		}
 		return data;
@@ -63,7 +63,7 @@ public class UP_CONNECT_REQ extends AbsMsg {
 			offset+=32;
 			resultState = true;
 		} catch (Exception e) {
-			LogUtil.getInstance().getLogger(UP_CONNECT_REQ.class).error("登录消息fromBytes转换异常",e);
+			LogUtil.getInstance().getLogger(Msg01.class).error("登录消息fromBytes转换异常",e);
 			e.printStackTrace();
 		}
 		return resultState;

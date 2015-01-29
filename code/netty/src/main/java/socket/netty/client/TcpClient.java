@@ -25,7 +25,7 @@ import socket.netty.client.thread.ReConnectedThread;
 import socket.netty.client.thread.ReSendMsgThread;
 import socket.netty.msg.AbsMsg;
 import socket.netty.msg.Converter;
-import socket.netty.msg.UP_CONNECT_REQ;
+import socket.netty.msg.Msg01;
 import utils.utils.PropertiesUtil;
 
 public class TcpClient extends Thread {
@@ -206,7 +206,7 @@ public class TcpClient extends Thread {
 
 		// 打开连接时发送登录消息
 		try {
-			UP_CONNECT_REQ m = new UP_CONNECT_REQ();
+			Msg01 m = new Msg01();
 
 			if (chtx != null && chtx.channel().isOpen()) {
 				chtx.write(m);

@@ -1,35 +1,28 @@
-package com.hdsx.taxi.dcs.dcsserver.socket.hanlder;
+package socket.netty.handler;
+
+import io.netty.channel.ChannelHandlerContext;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.hdsx.taxi.dcs.dcsserver.socket.UpaClient;
-import com.hdsx.taxi.dcs.nettyutil.msg.IMsg;
-import com.hdsx.taxi.dcs.nettyutil.msghandler.IHandler;
-import com.hdsx.taxi.dcs.upamsg.msg.UP_CONNECT_RSP;
+import socket.netty.client.TcpClient;
+import socket.netty.msg.AbsMsg;
+import socket.netty.msg.Msg80;
 
 /**
- * 链路登陆应答handler
  * 
- * @author cuipengfei
+ * 链路登陆应答handler
+ * @author sid
  *
  */
-public class Handler2002 implements IHandler {
+public class Handler80 implements IHandler {
 
-	Logger logger = LoggerFactory.getLogger(Handler2002.class);
-
-	// 0x00：成功
-	// 0x01：IP地址不正确
-	// 0x02：接入码不正确
-	// 0x03：用户没有注册
-	// 0x04：密码错误
-	// 0x05：资源紧张，稍后再连接（已经占用）
-	// 0x06：其他
+	Logger logger = LoggerFactory.getLogger(Handler80.class);
 
 	@Override
-	public void doHandle(IMsg m) {
-		if (m instanceof UP_CONNECT_RSP) {
-			UP_CONNECT_RSP msg = (UP_CONNECT_RSP) m;
+	public void doHandle(AbsMsg m, ChannelHandlerContext ctx) {
+		if (m instanceof Msg80) {
+			Msg80 msg = (Msg80) m;
 			byte result = msg.getResult();
 			String sResult = "";
 			boolean isLogin = false;

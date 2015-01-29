@@ -6,7 +6,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  * 消息队列
  * 
  */
-public class MsgQueue {
+public class ClientMsgQueue {
 
 	/**
 	 * 接收数据队列
