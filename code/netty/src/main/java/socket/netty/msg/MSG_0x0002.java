@@ -7,9 +7,9 @@ import socket.netty.msg.MessageID;
 
 /**
  * 
- * ClassName: Msg00 
+ * ClassName: MSG_0x0002 
  * Reason: 心跳消息 
- * date: 2014年10月15日 下午2:41:47 
+ * date: 2015年5月11日 下午4:01:48 
  *
  * @author sid
  */

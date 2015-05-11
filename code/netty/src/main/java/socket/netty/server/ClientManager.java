@@ -220,7 +220,7 @@ public class ClientManager {
 	 */
 	public static void sendAnswerData(AbsMsg answer, AbsMsg msg,
 			ChannelHandlerContext ctx) {
-		sendAnswerData(answer, msg.getHeader(), ctx);
+		sendAnswerData(answer, msg.getHead(), ctx);
 	}
 
 	/**
@@ -232,8 +232,8 @@ public class ClientManager {
 	 */
 	public static void sendAnswerData(AbsMsg answer, MsgHeader head,
 			ChannelHandlerContext ctx) {
-		answer.getHeader().setSeq(head.getSeq());
-		answer.getHeader().setMac(head.getMac());
+		answer.getHead().setSeq(head.getSeq());
+		answer.getHead().setMac(head.getMac());
 		sendData(answer, ctx);
 	}
 

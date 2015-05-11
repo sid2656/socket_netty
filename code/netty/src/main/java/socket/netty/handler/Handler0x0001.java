@@ -36,8 +36,8 @@ public class Handler0x0001 implements IHandler {
 		try {
 			if (m instanceof MSG_0x0001) {
 				MSG_0x0001 msg = (MSG_0x0001) m;
-				String mac = msg.getHeader().getMac();
-				response.setMsgid(msg.getHeader().getMsgid());
+				String mac = msg.getHead().getMac();
+				response.setMsgid(msg.getHead().getMsgid());
 				//TODO 用户校验工作
 				TcpUser user = getTcpUserByMac(mac);
 				if(DataTypeUtil.isNotEmpty(user)){

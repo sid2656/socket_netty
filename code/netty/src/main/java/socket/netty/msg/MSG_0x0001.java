@@ -12,9 +12,9 @@ import utils.utils.LogUtil;
 
 /**
  * 
- * ClassName: LoginMsg 
- * Reason: 登录消息 
- * date: 2014年10月15日 下午2:41:47 
+ * ClassName: MSG_0x0001 
+ * 登录消息 
+ * date: 2015年5月11日 下午4:01:24 
  *
  * @author sid
  */
@@ -40,8 +40,13 @@ public class MSG_0x0001 extends AbsMsg {
 
 
 	@Override
+	protected int getBodylen() {
+		return 7+32;
+	}
+
+	@Override
 	public byte[] bodytoBytes() {
-		byte[] data = new byte[4+7+32];
+		byte[] data = new byte[getBodylen()];
 		try {
 			int offset = 0;
 			System.arraycopy(Converter.strToBCD(this.connecttime), 0, data, offset, 7);
@@ -83,11 +88,6 @@ public class MSG_0x0001 extends AbsMsg {
 
 	public void setMd5(String md5) {
 		this.md5 = md5;
-	}
-
-	@Override
-	protected int getBodylen() {
-		return 0;
 	}
 
 }

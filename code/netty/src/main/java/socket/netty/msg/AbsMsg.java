@@ -86,8 +86,12 @@ public abstract class AbsMsg implements Serializable {
 
 	protected abstract boolean bodyfrombytes(byte[] b);
 
-	public MsgHeader getHeader() {
+	public MsgHeader getHead() {
 		return head;
+	}
+
+	public void setHead(MsgHeader head) {
+		this.head = head;
 	}
 
 }

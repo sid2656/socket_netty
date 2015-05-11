@@ -7,6 +7,12 @@ import org.slf4j.LoggerFactory;
 
 import socket.netty.Converter;
 import socket.netty.msg.AbsMsg;
+import socket.netty.msg.MSG_0x0001;
+import socket.netty.msg.MSG_0x0002;
+import socket.netty.msg.MSG_0x0003;
+import socket.netty.msg.MSG_0x1001;
+import socket.netty.msg.MSG_0x2001;
+import socket.netty.msg.MSG_0x3003;
 import socket.netty.msg.MessageID;
 import socket.netty.msg.MsgHeader;
 
@@ -29,46 +35,44 @@ public class MsgRespFactory {
 	public static AbsMsg genMsg(MsgHeader head, byte[] msgbytes) {
 		logger.debug("收到消息内容：{}",Converter.bytes2HexsSpace(msgbytes));
 		ByteBuffer bf = ByteBuffer.wrap(msgbytes);
-		byte[] body = new byte[msgbytes.length - head.getHeadLen() - 2];
-		bf.position(head.getHeadLen());
+		byte[] body = new byte[msgbytes.length - head.HEAD_LENGTH - 2];
+		bf.position(head.HEAD_LENGTH);
 		bf.get(body);
-		if (head.getEncrypt_flag() == 1) {
-			body = Encrypt.encryptUtil(head.getEncrypt_key(), body,
-					body.length, head.getM1(), head.getIA1(), head.getIC1());
-		}
 		AbsMsg m = null;
-		int msg_id = head.getMsg_id();
+		int msg_id = head.getMsgid();
 		logger.debug("收到消息id：{}",msg_id);
 		logger.debug("收到消息body：{}",Converter.bytes2HexsSpace(body));
-		if (msg_id != MessageID.UP_EXG_MSG&&msg_id != MessageID.UP_SUM_MSG
-				&& msg_id == MessageID.UP_BASE_MSG) {
-		}
 		/**
 		 * 如果有子业务类型的把子业务类型放进消息头里面方便handle使用
 		 */
-		head.setMsg_id(msg_id);
+		head.setMsgid(msg_id);
 		switch (msg_id) {
-			/** 链路类 **/
-			case MessageID.UP_CONNECT_RSP:
-				m = new UP_CONNECT_RSP();
+			case MessageID.MSG_0x0001:
+				m = new MSG_0x0001();
 				break;
-			case MessageID.UP_DISCONNECT_RSP:
-				m = new UP_DISCONNECT_RSP();
+			case MessageID.MSG_0x0002:
+				m = new MSG_0x0002();
 				break;
-			case MessageID.UP_LINKTEST_RSP:
-				m = new UP_LINKTEST_RSP();
+			case MessageID.MSG_0x0003:
+				m = new MSG_0x0003();
 				break;
-			case MessageID.UP_CLOSELINK_INFORM:
-				m = new UP_CLOSELINK_INFORM();
+			case MessageID.MSG_0x1001:
+				m = new MSG_0x1001();
+				break;
+			case MessageID.MSG_0x2001:
+				m = new MSG_0x2001();
+				break;
+			case MessageID.MSG_0x3003:
+				m = new MSG_0x3003();
 				break;
 			default:
-				m = new CommonAnswerMsg();
+				m = new MSG_0x3003();
 				break;
 		}
 		if (m != null) {
 			m.setHead(head);
 		}
-		m.bodyfromBytes(body);
+		m.fromBytes(body);
 		return m;
 	}
 }

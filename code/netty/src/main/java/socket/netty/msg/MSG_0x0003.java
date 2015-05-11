@@ -3,6 +3,8 @@ package socket.netty.msg;
 import org.slf4j.Logger;
 
 import socket.netty.Converter;
+import socket.netty.msg.AbsMsg;
+import socket.netty.msg.MessageID;
 import utils.utils.LogUtil;
 
 
@@ -10,14 +12,14 @@ import utils.utils.LogUtil;
 /**
  * 
  * ClassName: Msg00 
- * Reason: 服务器端通用应答
+ * Reason: 客户端通用
  * date: 2014年10月15日 下午2:41:47 
  *
  * @author sid
  */
-public class MSG_0x3003 extends AbsMsg {
+public class MSG_0x0003 extends AbsMsg {
 	
-	Logger logger = LogUtil.getInstance().getLogger(MSG_0x3003.class);
+	Logger logger = LogUtil.getInstance().getLogger(MSG_0x0003.class);
 
 	private static final long serialVersionUID = 1L;
 	
@@ -27,7 +29,7 @@ public class MSG_0x3003 extends AbsMsg {
 
 	@Override
 	protected int getMsgID() {
-		return MessageID.MSG_0x3003;
+		return MessageID.MSG_0x0003;
 	}
 
 	@Override

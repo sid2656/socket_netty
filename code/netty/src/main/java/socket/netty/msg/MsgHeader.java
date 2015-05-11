@@ -7,7 +7,7 @@ import utils.utils.LogUtil;
 
 public class MsgHeader implements Serializable {
 	private static final long serialVersionUID = 1L;
-	public static int HEAD_LENGTH = 13;
+	public int HEAD_LENGTH = 13;
 	private int msgid; //消息ID
 	private long seq; //从 0 开始累加
 	private String mac; //接入平台标识

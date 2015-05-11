@@ -19,7 +19,7 @@ public class HandlerFactory {
 			.getLogger(HandlerFactory.class);
 
 	public static IHandler getHandler(AbsMsg m) {
-		int msgid = m.getHeader().getMsgid();
+		int msgid = m.getHead().getMsgid();
 		if (logger.isDebugEnabled()) {
 			logger.debug("handler工厂产生消息:" + Integer.toHexString(msgid)); //$NON-NLS-1$
 		}

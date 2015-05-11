@@ -23,7 +23,7 @@ public class Handler0x0003 implements IHandler {
 	public void doHandle(AbsMsg m, ChannelHandlerContext ctx) {
 		try {
 			if (m instanceof MSG_0x0002) {
-				logger.info("心跳消息:"+m.getHeader().getMac());
+				logger.info("心跳消息:"+m.getHead().getMac());
 				Client client = ClientManager.getClient(ctx);
 				ClientManager.setClientLastTime(ctx, client);
 			} else {
