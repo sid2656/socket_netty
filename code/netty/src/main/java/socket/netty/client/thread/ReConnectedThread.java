@@ -1,4 +1,4 @@
-package com.hdsx.taxi.dcs.dcsserver.socket.thread;
+package socket.netty.client.thread;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -6,7 +6,7 @@ import java.util.TimerTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.hdsx.taxi.dcs.dcsserver.socket.UpaClient;
+import socket.netty.client.TcpClient;
 
 public class ReConnectedThread extends AbsThread {
 

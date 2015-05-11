@@ -7,10 +7,10 @@ import org.slf4j.LoggerFactory;
 
 import socket.netty.handler.HandlerFactory;
 import socket.netty.handler.IHandler;
+import socket.netty.handler.ReciPackBean;
 import socket.netty.msg.AbsMsg;
 import socket.netty.msg.MsgFactory;
 import socket.netty.msg.MsgHeader;
-import socket.netty.msg.ReciPackBean;
 
 /**
  * 
@@ -43,7 +43,7 @@ public class ParseMsgThread extends Thread {
 			// 生成消息后产生handler
 			AbsMsg msg = MsgFactory.genMsg(head, rpb.getMsgbytes());
 			if (msg == null) {
-				logger.error(Integer.toHexString(head.getUint8mid()) + "消息不存在");
+				logger.error(Integer.toHexString(head.getMsgid()) + "消息不存在");
 				return;
 			}
 			// 交给对应handler处理

@@ -1,5 +1,8 @@
 package socket.netty.msg;
 
+import socket.netty.msg.AbsMsg;
+import socket.netty.msg.MessageID;
+
 
 
 /**
@@ -10,13 +13,13 @@ package socket.netty.msg;
  *
  * @author sid
  */
-public class Msg00 extends AbsMsg {
+public class MSG_0x0002 extends AbsMsg {
 
 	private static final long serialVersionUID = 1L;
 
 	@Override
 	protected int getMsgID() {
-		return MessageID.ID_0x00;
+		return MessageID.MSG_0x0002;
 	}
 
 	@Override

@@ -1,25 +1,24 @@
-package socket.netty.client;
+package socket.netty.client.cache;
 
 import java.nio.ByteBuffer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import socket.netty.Converter;
 import socket.netty.msg.AbsMsg;
-import socket.netty.msg.Converter;
 import socket.netty.msg.MessageID;
 import socket.netty.msg.MsgHeader;
 
 /**
  * 消息工厂
  * 
- * @author cuipengfei
+ * @author sid
  *
  */
 public class MsgRespFactory {
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(MsgRespFactory.class);
+	private static final Logger logger = LoggerFactory.getLogger(MsgRespFactory.class);
 
 	/**
 	 * 根据二进制文件生成消息对象

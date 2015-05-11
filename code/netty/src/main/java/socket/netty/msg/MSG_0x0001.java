@@ -2,6 +2,11 @@ package socket.netty.msg;
 
 import java.util.Arrays;
 
+import org.slf4j.Logger;
+
+import socket.netty.Converter;
+import socket.netty.msg.AbsMsg;
+import socket.netty.msg.MessageID;
 import utils.utils.LogUtil;
 
 
@@ -13,23 +18,24 @@ import utils.utils.LogUtil;
  *
  * @author sid
  */
-public class Msg01 extends AbsMsg {
+public class MSG_0x0001 extends AbsMsg {
+	
+	Logger logger = LogUtil.getInstance().getLogger(MSG_0x0001.class);
 
 	private static final long serialVersionUID = 1L;
-	private long userid;
 	private String connecttime;
-	private String mac;
+	private String md5;
 
 	@Override
 	public String toString() {
-		return "UP_CONNECT_REQ [userid=" + userid + ", connecttime="
-				+ connecttime + ", mac=" + mac + ", getMsgID()=" + getMsgID()
+		return "UP_CONNECT_REQ [ connecttime="
+				+ connecttime + ", getMsgID()=" + getMsgID()
 				+ "]";
 	}
 
 	@Override
 	protected int getMsgID() {
-		return MessageID.ID_0x01;
+		return MessageID.MSG_0x0001;
 	}
 
 
@@ -38,13 +44,11 @@ public class Msg01 extends AbsMsg {
 		byte[] data = new byte[4+7+32];
 		try {
 			int offset = 0;
-			System.arraycopy(Converter.toByteArray32Long(this.userid), 0, data, offset, 4);
-			offset+=4;
 			System.arraycopy(Converter.strToBCD(this.connecttime), 0, data, offset, 7);
 			offset+=7;
-			System.arraycopy(Converter.getBytes(this.mac), 0, data, offset, Converter.getBytes(this.mac).length);
+			System.arraycopy(Converter.getBytes(Converter.MD5UTF8(this.connecttime+this.head.getMac())), 0, data, offset, 32);
 		} catch (Exception e) {
-			LogUtil.getInstance().getLogger(Msg01.class).error("登录消息toBytes转换异常",e);
+			logger.error("登录消息toBytes转换异常",e);
 			e.printStackTrace();
 		}
 		return data;
@@ -55,26 +59,14 @@ public class Msg01 extends AbsMsg {
 		boolean resultState = false;
 		int offset = 0;
 		try {
-			this.userid = Converter.bigBytes2Unsigned32Long(b, offset);
-			offset+=4;
 			this.connecttime = Converter.BCDToStr(Arrays.copyOfRange(b, offset, offset+7));
 			offset+=7;
-			this.mac = new String(Arrays.copyOfRange(b, offset, offset+32));
-			offset+=32;
 			resultState = true;
 		} catch (Exception e) {
-			LogUtil.getInstance().getLogger(Msg01.class).error("登录消息fromBytes转换异常",e);
+			LogUtil.getInstance().getLogger(MSG_0x0001.class).error("登录消息fromBytes转换异常",e);
 			e.printStackTrace();
 		}
 		return resultState;
-	}
-
-	public long getUserid() {
-		return userid;
-	}
-
-	public void setUserid(long userid) {
-		this.userid = userid;
 	}
 
 	public String getConnecttime() {
@@ -85,12 +77,12 @@ public class Msg01 extends AbsMsg {
 		this.connecttime = connecttime;
 	}
 
-	public String getMac() {
-		return mac;
+	public String getMd5() {
+		return md5;
 	}
 
-	public void setMac(String mac) {
-		this.mac = mac;
+	public void setMd5(String md5) {
+		this.md5 = md5;
 	}
 
 	@Override

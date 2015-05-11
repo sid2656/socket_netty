@@ -3,22 +3,24 @@ package socket.netty.msg;
 import java.io.Serializable;
 import java.nio.ByteBuffer;
 
+import socket.netty.Constants;
+
 
 public abstract class AbsMsg implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	protected MsgHeader head;
 
-	static int uint32seq = Integer.MIN_VALUE;
+	static int seq = Integer.MIN_VALUE;
 
 	public AbsMsg() {
 		this.head = new MsgHeader();
-		this.head.setUint8mid((byte) getMsgID());
-		byte[] fs = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-				0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
-		String persist = new String(fs);
-		this.head.setPersist(persist);
-		this.head.setUint32seq(uint32seq++);
+		this.head.setMsgid((byte) getMsgID());
+//		byte[] fs = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+//				0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+//		String persist = new String(fs);
+		this.head.setMac(Constants.SERVER_MAC);
+		this.head.setSeq(seq++);
 
 	}
 
@@ -27,8 +29,8 @@ public abstract class AbsMsg implements Serializable {
 		ByteBuffer bb = ByteBuffer.allocate(1024);
 
 		// 消息内容
-		this.head.setUint16Length((short) (getBodylen() + this.head
-				.getBodylen()+1));
+		this.head.setLength((short) (getBodylen() + this.head
+				.getLength()+1));
 		byte[] head = this.head.tobytes();
 		byte[] body = bodytoBytes();
 
@@ -57,7 +59,6 @@ public abstract class AbsMsg implements Serializable {
 	}
 
 	public boolean fromBytes(byte[] bs) {
-
 		byte xor = 0;
 		 // 计算 校验位
 		for (int i = 0; i < bs.length  -1 ; i++) {

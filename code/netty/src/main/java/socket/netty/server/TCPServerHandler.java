@@ -14,11 +14,13 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.ReferenceCountUtil;
 
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.util.Timer;
 
 import org.slf4j.Logger;
 
-import socket.netty.msg.ReciPackBean;
+import socket.netty.handler.ReciPackBean;
 import socket.netty.msg.ServerMsgQueue;
 import utils.utils.LogUtil;
 
@@ -37,12 +39,8 @@ public class TCPServerHandler extends ChannelInboundHandlerAdapter {
 	public static boolean isrunning = false;
 	public static Timer timer = new Timer();
 
-	// (1)
-
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) {
-		logger.info("消息来了");
-
 		try {
 			if (msg instanceof byte[]) {
 				final byte[] msgbytes = (byte[]) msg;
@@ -62,40 +60,34 @@ public class TCPServerHandler extends ChannelInboundHandlerAdapter {
 
 	@Override
 	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) { // (4)
-		// Close the connection when an exception is raised.
 		cause.printStackTrace();
 		ctx.close();
 	}
 
 	@Override
 	public void channelActive(ChannelHandlerContext chtx) throws Exception {
-
-		if (logger.isDebugEnabled()) {
-			logger.debug("TCPServerHandler:channelActive(ChannelHandlerContext) - start"); //$NON-NLS-1$
-		}
-
 		super.channelActive(chtx);
-		TCPServer.setChtx(chtx);
-//		SendLocationThread.getInstance().run();
-		if (logger.isDebugEnabled()) {
-			logger.debug("TCPServerHandler:channelActive(ChannelHandlerContext) - end"); //$NON-NLS-1$
-		}
+		logger.info("-------------临时客户端建立连接--------------");
+		ClientManager.addTemClient(chtx);
 	}
 
 	@Override
 	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-		if (logger.isDebugEnabled()) {
-			logger.debug("TCPServerHandler:channelInactive(ChannelHandlerContext) - start"); //$NON-NLS-1$
-		}
 
 		super.channelInactive(ctx);
 		TCPServer.getChtx().close();
 		TCPServerHandler.isrunning=false;
 		TCPServerHandler.timer.cancel();
 
-		if (logger.isDebugEnabled()) {
-			logger.debug("TCPServerHandler:channelInactive(ChannelHandlerContext) - end"); //$NON-NLS-1$
-		}
+		InetSocketAddress address = (InetSocketAddress) ctx.channel()
+				.remoteAddress();
+		InetAddress inetAdd = address.getAddress();
+		logger.info("客户端断开连接：" + ctx.name() 
+				+ ",IP:" + inetAdd.getHostAddress()
+				+ ",port:" + address.getPort());
+		// 记录日志
+		ClientManager.removeClient(ctx);
+		ClientManager.removeTemClient(ctx);
 	}
 
 }

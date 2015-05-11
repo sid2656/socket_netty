@@ -1,4 +1,4 @@
-package socket.netty.client;
+package socket.netty.client.cache;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -19,7 +19,7 @@ import utils.utils.DateFormateUtil;
 /**
  * 消息缓存
  * 
- * @author cuipengfei
+ * @author sid
  *
  */
 public class MsgCache {
@@ -50,7 +50,9 @@ public class MsgCache {
 	 */
 	public void put(AbsMsg msg) {
 
-		if (msg.getHead().getMsg_id() == MessageID.UP_CLOSELINK_INFORM) {
+		//指定部分不需要缓存的消息
+		if (msg.getHeader().getMsgid() == MessageID.MSG_0x0001
+				||msg.getHeader().getMsgid() == MessageID.MSG_0x0002) {
 			return;
 		}
 		String key = getMsgKey(msg);
@@ -150,7 +152,7 @@ public class MsgCache {
 	 * @return
 	 */
 	public static String getMsgKey(AbsMsg m){
-		return m.getHead().getMsg_id()+";"+m.getHead().getMsg_sn();
+		return m.getHeader().getMsgid()+";"+m.getHeader().getSeq();
 	}
 	/**
 	 * 根据消息头生成消息id
@@ -158,6 +160,6 @@ public class MsgCache {
 	 * @return
 	 */
 	public static String getMsgKey(MsgHeader header){
-		return header.getMsg_id()+";"+header.getMsg_sn();
+		return header.getMsgid()+";"+header.getSeq();
 	}
 }

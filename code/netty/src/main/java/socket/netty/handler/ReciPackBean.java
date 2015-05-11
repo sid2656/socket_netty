@@ -1,4 +1,4 @@
-package socket.netty.msg;
+package socket.netty.handler;
 
 import io.netty.channel.ChannelHandlerContext;
 

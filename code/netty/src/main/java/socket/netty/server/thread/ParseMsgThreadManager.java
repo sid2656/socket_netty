@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import socket.netty.client.thread.AbsThread;
-import socket.netty.msg.ReciPackBean;
+import socket.netty.handler.ReciPackBean;
 import socket.netty.msg.ServerMsgQueue;
 import utils.utils.PropertiesUtil;
 
@@ -34,6 +34,8 @@ public class ParseMsgThreadManager extends AbsThread {
 
 	private ThreadPoolExecutor threadPool;
 
+	private volatile boolean isStart=true;
+
 	public ParseMsgThreadManager() {
 		int corePoolSize = Integer.parseInt(PropertiesUtil.getProperties()
 				.getProperty("ParseCorePoolSize"));
@@ -51,6 +53,8 @@ public class ParseMsgThreadManager extends AbsThread {
 
 	@Override
 	public void runThread(long delay, long period) {
+		isRun = true;
+		isStart=true;
 
 		new Thread(new ParseThreadManage()).start();
 		logger.info("服务器消息处理启动完成");
@@ -59,9 +63,8 @@ public class ParseMsgThreadManager extends AbsThread {
 
 	class ParseThreadManage implements Runnable {
 
-		@Override
 		public void run() {
-			while (true) {
+			while (isStart) {
 				ReciPackBean rpb = null;
 				try {
 					rpb = ServerMsgQueue.getRecqueue().take();
@@ -70,14 +73,14 @@ public class ParseMsgThreadManager extends AbsThread {
 					logger.error("消息解析管理线程运行异常", e);
 				}
 			}
-
 		}
 
 	}
 
 	@Override
 	public void stop() {
-		
+		isRun = false;
+		isStart=false;
 	}
 
 }

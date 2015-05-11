@@ -1,4 +1,4 @@
-package com.hdsx.taxi.dcs.dcsserver.socket.thread;
+package socket.netty.client.thread;
 
 import java.util.Date;
 import java.util.List;
@@ -8,9 +8,9 @@ import java.util.TimerTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.hdsx.taxi.dcs.dcsserver.socket.MsgCache;
-import com.hdsx.taxi.dcs.dcsserver.socket.MsgObj;
-import com.hdsx.taxi.dcs.dcsserver.socket.UpaClient;
+import socket.netty.client.TcpClient;
+import socket.netty.client.cache.MsgCache;
+import socket.netty.client.cache.MsgObj;
 
 public class ReSendMsgThread extends AbsThread {
 

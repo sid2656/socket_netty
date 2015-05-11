@@ -2,6 +2,8 @@ package socket.netty.msg;
 
 import java.util.concurrent.LinkedBlockingQueue;
 
+import socket.netty.handler.ReciPackBean;
+
 /**
  * 
  * 消息队列

@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import socket.netty.client.TcpClient;
-import socket.netty.msg.OrderIssuedNoticeMsg;
+import socket.netty.msg.MSG_0x0002;
 
 
 public class HeartBeatThread extends AbsThread {
@@ -45,7 +45,7 @@ public class HeartBeatThread extends AbsThread {
 				@Override
 				public void run() {
 					logger.debug("给upa服务发送心跳");
-					OrderIssuedNoticeMsg m = new OrderIssuedNoticeMsg();
+					MSG_0x0002 m = new MSG_0x0002();
 					TcpClient.getInstance().send(m);
 				}
 			}, delay, period);

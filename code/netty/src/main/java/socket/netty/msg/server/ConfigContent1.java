@@ -16,12 +16,12 @@
  *
  */
 
-package socket.netty.msg;
+package socket.netty.msg.server;
 
 import java.io.File;
 
-public class ConfigContent {
-	public ConfigContent() {
+public class ConfigContent1 {
+	public ConfigContent1() {
 	}
 
 	public static String PROJECT_ABSOLUTE_PATH = System.getProperty("user.dir");

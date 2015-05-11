@@ -1,4 +1,4 @@
-package com.hdsx.taxi.dcs.dcsserver.socket.thread;
+package socket.netty.client.thread;
 
 import java.nio.ByteBuffer;
 import java.util.Date;
@@ -6,20 +6,18 @@ import java.util.Date;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.hdsx.taxi.dcs.dcsserver.socket.MsgCache;
-import com.hdsx.taxi.dcs.dcsserver.socket.MsgRespFactory;
-import com.hdsx.taxi.dcs.dcsserver.socket.hanlder.HandlerFactory;
-import com.hdsx.taxi.dcs.dcsserver.util.PropertiesUtil;
-import com.hdsx.taxi.dcs.nettyutil.msghandler.IHandler;
-import com.hdsx.taxi.dcs.upamsg.AbsMsg;
-import com.hdsx.taxi.dcs.upamsg.MsgHeader;
-import com.hdsx.taxi.dcs.upamsg.util.CRC16_CUI;
-import com.hdsx.taxi.dcs.upamsg.util.Converter;
+import socket.netty.client.cache.MsgCache;
+import socket.netty.client.cache.MsgRespFactory;
+import socket.netty.handler.HandlerFactory;
+import socket.netty.handler.IHandler;
+import socket.netty.handler.ReciPackBean;
+import socket.netty.msg.AbsMsg;
+import socket.netty.msg.MsgHeader;
 
 /**
  * 处理消息线程
  * 
- * @author cuipengfei
+ * @author sid
  *
  */
 public class ParseMsgThread extends Thread {
@@ -27,9 +25,9 @@ public class ParseMsgThread extends Thread {
 	private static final Logger logger = LoggerFactory
 			.getLogger(ParseMsgThread.class);
 
-	private byte[] rpb;
+	private ReciPackBean rpb;
 
-	public ParseMsgThread(byte[] rpb) {
+	public ParseMsgThread(ReciPackBean rpb) {
 		this.rpb = rpb;
 	}
 
@@ -39,35 +37,26 @@ public class ParseMsgThread extends Thread {
 			HeartBeatThread.lastTime=new Date();
 			
 			// 转码
-			rpb = decode(rpb);
+			byte[] msgbytes = decode(rpb.getMsgbytes());
 
 			// 消息头解析
-			MsgHeader head = headFromBytes(rpb);
+			MsgHeader head = headFromBytes(msgbytes);
 			if (head == null) {
 				return;
 			}
 			//去除消息缓存
 			MsgCache.getInstance().remove(MsgCache.getMsgKey(head));
 
-			// 登陆消息处理
-			if (head.getEncrypt_flag() == 1) {
-				head.setIA1(Long.parseLong(PropertiesUtil.getProperties()
-						.getProperty("IA1")));
-				head.setIC1(Long.parseLong(PropertiesUtil.getProperties()
-						.getProperty("IC1")));
-				head.setM1(Long.parseLong(PropertiesUtil.getProperties()
-						.getProperty("M1")));
-			}
 			// 生成消息后产生handler
-			AbsMsg msg = MsgRespFactory.genMsg(head, rpb);
+			AbsMsg msg = MsgRespFactory.genMsg(head, msgbytes);
 			if (msg == null) {
-				logger.error(Integer.toHexString(head.getMsg_id()) + "消息不存在");
+				logger.error(Integer.toHexString(head.getMsgid()) + "消息不存在");
 				return;
 			}
 			// 交给对应handler处理
 			IHandler handler = HandlerFactory.getHandler(msg);
 			if (handler != null) {
-				handler.doHandle(msg);
+				handler.doHandle(msg,rpb.getChannel());
 			}
 		} catch (Exception e) {
 			logger.error("接受消息队列处理数据错误", e);
@@ -89,16 +78,6 @@ public class ParseMsgThread extends Thread {
 		byte[] crc = new byte[2];
 		buffer1.position(b.length - 2);
 		buffer1.get(crc);
-
-		byte[] crc_check = CRC16_CUI.getCRCCRC16_CCITT(head_body);
-
-		if (Converter.bigBytes2Unsigned16Int(crc, 0) != Converter
-				.bigBytes2Unsigned16Int(crc_check, 0)) {
-			logger.info(Converter.bigBytes2Unsigned16Int(crc, 0) + "  "
-					+ Converter.bigBytes2Unsigned16Int(crc_check, 0));
-			logger.error("消息crc校验码不正确");
-			return null;// crc校验码有误
-		}
 
 		MsgHeader head = new MsgHeader();
 		if (!head.frombytes(head_body))

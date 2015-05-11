@@ -1,4 +1,4 @@
-package com.hdsx.taxi.dcs.dcsserver.socket.thread;
+package socket.netty.client.thread;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -7,13 +7,14 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.hdsx.taxi.dcs.dcsserver.util.PropertiesUtil;
-import com.hdsx.taxi.dcs.utils.MsgQueue;
+import socket.netty.handler.ReciPackBean;
+import socket.netty.msg.ClientMsgQueue;
+import utils.utils.PropertiesUtil;
 
 /**
  * 线程池（处理消息）管理
  * 
- * @author cuipengfei
+ * @author sid
  *
  */
 public class ParseMsgThreadManager extends AbsThread {
@@ -31,7 +32,7 @@ public class ParseMsgThreadManager extends AbsThread {
 
 	private ThreadPoolExecutor threadPool;
 
-	private boolean isStart=true;
+	private volatile boolean isStart=true;
 	
 	public ParseMsgThreadManager() {
 		int corePoolSize = Integer.parseInt(PropertiesUtil.getProperties()
@@ -48,7 +49,8 @@ public class ParseMsgThreadManager extends AbsThread {
 
 	@Override
 	protected void runThread(long delay, long period) {
-
+		isRun = true;
+		isStart=true;
 		new Thread(new ParseThreadManage()).start();
 		logger.info("服务器消息处理线程启动完成");
 
@@ -56,12 +58,11 @@ public class ParseMsgThreadManager extends AbsThread {
 
 	class ParseThreadManage implements Runnable {
 
-		@Override
 		public void run() {
 			while (isStart) {
-				byte[] rpb = null;
+				ReciPackBean rpb = null;
 				try {
-					rpb = ServerMsgQueue.getRecqueue().take();
+					rpb = ClientMsgQueue.getRecqueue().take();
 					threadPool.execute(new ParseMsgThread(rpb));
 				} catch (Exception e) {
 					logger.error("消息解析管理线程运行异常", e);

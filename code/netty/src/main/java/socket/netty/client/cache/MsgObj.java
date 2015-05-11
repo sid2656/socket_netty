@@ -8,12 +8,12 @@
  *
 */
 
-package com.hdsx.taxi.dcs.dcsserver.socket;
+package socket.netty.client.cache;
 
 import java.io.Serializable;
 import java.util.Date;
 
-import com.hdsx.taxi.dcs.upamsg.AbsMsg;
+import socket.netty.msg.AbsMsg;
 
 /**
  * 

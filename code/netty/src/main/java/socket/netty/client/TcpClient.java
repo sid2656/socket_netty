@@ -12,27 +12,23 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 
-import java.util.Calendar;
 import java.util.Properties;
-import java.util.Timer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import socket.netty.Converter;
 import socket.netty.client.thread.HeartBeatThread;
 import socket.netty.client.thread.ParseMsgThreadManager;
 import socket.netty.client.thread.ReConnectedThread;
 import socket.netty.client.thread.ReSendMsgThread;
 import socket.netty.msg.AbsMsg;
-import socket.netty.msg.Converter;
-import socket.netty.msg.Msg01;
+import socket.netty.msg.MSG_0x0001;
 import utils.utils.PropertiesUtil;
 
 public class TcpClient extends Thread {
 
 	private volatile static TcpClient obj;
-
-	private volatile static Timer yssj;
 
 	public static TcpClient getInstance() {
 		if (obj == null) {
@@ -74,7 +70,7 @@ public class TcpClient extends Thread {
 			try {
 				init();
 			} catch (Exception e) {
-				logger.error("upaclient断线重连初始化失败：", e);
+				logger.error("client断线重连初始化失败：", e);
 				e.printStackTrace();
 			}
 		}
@@ -92,7 +88,7 @@ public class TcpClient extends Thread {
 		EventLoopGroup group = new NioEventLoopGroup();
 		Properties p = PropertiesUtil.getProperties();
 		try {
-//			final LogLevel loglevel = LogLevel.valueOf(p.getProperty("upa_loglevel").toUpperCase());
+//			final LogLevel loglevel = LogLevel.valueOf(p.getProperty("_loglevel").toUpperCase());
 			Bootstrap b = new Bootstrap();
 			b.group(group).channel(NioSocketChannel.class)
 					.handler(new ChannelInitializer<SocketChannel>() {
@@ -106,33 +102,19 @@ public class TcpClient extends Thread {
 					});
 
 			b.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000);
-			cf = b.connect(p.getProperty("upa_hostname"),
-					Integer.parseInt(p.getProperty("upa_hostport"))).sync();
+			cf = b.connect(p.getProperty("_hostname"),
+					Integer.parseInt(p.getProperty("_hostport"))).sync();
 			// cf.channel().closeFuture().sync();
 			ParseMsgThreadManager.getInstance().run(0, 0);
 		} catch (InterruptedException e) {
-			logger.error("upaclient初始化失败：", e); //$NON-NLS-1$
+			logger.error("client初始化失败：", e); //$NON-NLS-1$
 			e.printStackTrace();
 		} catch (Exception e){
-			logger.error("upaclient初始化失败：", e); //$NON-NLS-1$
+			logger.error("client初始化失败：", e); //$NON-NLS-1$
 			e.printStackTrace();
 		} finally {
 			// group.shutdownGracefully();
 		}
-	}
-	
-	/**
-	 * 启动定时器
-	 */
-	private void startTimer(){
-    	//每天一点执行
-    	Calendar cal = Calendar.getInstance();
-    	cal.set(Calendar.HOUR_OF_DAY,1);
-    	cal.set(Calendar.MINUTE,0);
-    	cal.set(Calendar.SECOND,0);
-    	yssj = new Timer("CountYssjTask");
-    	yssj.schedule(new CountYssjTask(),cal.getTime(), 24*3600*1000);
-    	logger.info("启动定时更新任务--");
 	}
 
 	/**
@@ -148,16 +130,14 @@ public class TcpClient extends Thread {
 			this.connstate = 1;
 			ReSendMsgThread.getInstance().run(0,this.resendmsgdealy * 1000);
 			HeartBeatThread.getInstance().run(0,this.heartbeatdelay * 1000);
-			logger.info("upaclient线程启动成功");
-			//启动定时器
-			startTimer();
+			logger.info("client线程启动成功");
 		}
 	}
 
 	/**
 	 * 断开连接，关闭服务
 	 */
-	public void stopUpaClient() {
+	public void stopClient() {
 		ReSendMsgThread.getInstance().stop();
 		HeartBeatThread.getInstance().stop();
 		ParseMsgThreadManager.getInstance().stop();
@@ -173,7 +153,7 @@ public class TcpClient extends Thread {
 	 */
 	public void send(AbsMsg m) {
 		if (this.isLogined) {
-			logger.debug("UPACLINET发送："+Converter.bytes2HexsSpace(m.toBytes()));
+			logger.debug("CLINET发送："+Converter.bytes2HexsSpace(m.toBytes()));
 			if (chtx != null && chtx.channel().isOpen()) {
 				chtx.write(m);
 				chtx.flush();
@@ -188,7 +168,7 @@ public class TcpClient extends Thread {
 	 */
 	public void sendWithoutCache(AbsMsg m) {
 		if (isLogined) {
-			logger.debug("UPACLINET发送WithoutCache："+Converter.bytes2HexsSpace(m.toBytes()));
+			logger.debug("CLINET发送WithoutCache："+Converter.bytes2HexsSpace(m.toBytes()));
 			if (chtx != null && chtx.channel().isOpen()) {
 				chtx.write(m);
 				chtx.flush();
@@ -206,16 +186,15 @@ public class TcpClient extends Thread {
 
 		// 打开连接时发送登录消息
 		try {
-			Msg01 m = new Msg01();
-
+			MSG_0x0001 m = new MSG_0x0001();
 			if (chtx != null && chtx.channel().isOpen()) {
 				chtx.write(m);
 				chtx.flush();
-				logger.info("-------------upa发送登录消息--------------");
+				logger.info("-------------发送登录消息--------------");
 			}
 
 		} catch (Exception e) {
-			logger.error("upaClient :login() - Exception",e); //$NON-NLS-1$
+			logger.error("Client :login() - Exception",e); //$NON-NLS-1$
 			e.printStackTrace();
 		}
 	}

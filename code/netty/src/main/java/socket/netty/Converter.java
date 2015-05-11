@@ -1,4 +1,4 @@
-package socket.netty.msg;
+package socket.netty;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
@@ -19,7 +19,7 @@ import utils.utils.LogUtil;
 /**
  * 字节转换工具类
  * 
- * @author cuipengfei
+ * @author sid
  * 
  */
 public class Converter {

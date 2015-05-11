@@ -17,9 +17,9 @@ import utils.utils.LogUtil;
 
 /**
  * 
- * ClassName: TCPServer
- * REASON(可选). date: 2014年4月10日 上午10:47:13
- * 
+ * ClassName: TCPServer 
+ * date: 2015年1月29日 下午4:11:19 
+ *
  * @author sid
  */
 public class TCPServer extends Thread {
@@ -83,6 +83,12 @@ public class TCPServer extends Thread {
 		}
 	}
 
+	/**
+	 * 
+	 * closeConnect
+	 *
+	 * @author sid
+	 */
 	public void closeConnect() {
 		try {
 			cf.channel().closeFuture().sync();
@@ -94,7 +100,7 @@ public class TCPServer extends Thread {
 	/**
 	 * 
 	 * send:(发送消息).
-	 * 
+	 *
 	 * @author sid
 	 * @param m
 	 */
