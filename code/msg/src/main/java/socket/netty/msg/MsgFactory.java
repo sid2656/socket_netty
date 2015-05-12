@@ -24,12 +24,13 @@ public class MsgFactory {
 	 */
 	public static AbsMsg genMsg(MsgHeader head, byte[] msgbytes) {
 		ByteBuffer bf = ByteBuffer.wrap(msgbytes);
-		int bodylen = msgbytes.length-head.getLength()-2;//去掉末尾
+		int bodylen = msgbytes.length-head.HEAD_LENGTH-2;//去掉末尾
 		byte[] body = new byte[bodylen];
-		bf.position(bodylen);
+		bf.position(head.HEAD_LENGTH);
 		bf.get(body);
 		AbsMsg m = null;
 		int msg_id = head.getMsgid();
+		logger.info("处理消息id："+msg_id);
 		switch (msg_id) {
 			case MessageID.MSG_0x0001:
 				m = new MSG_0x0001();

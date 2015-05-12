@@ -1,4 +1,4 @@
-package socket.netty.client.cache;
+package socket.netty.cache;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -64,19 +64,22 @@ public class MsgCache {
 			m.setSendtime(new Date());
 			m.setSendedcount(m.getSendedcount() + 1);
 		}
-		this.put(m);
+		AbsMsg am = m.getMsg();
+		Element e = new Element(getMsgKey(am), msg);
+		this.cache.put(e);
 
 		if (logger.isDebugEnabled()) {
 			logger.debug("消息加入缓存！消息key:" + key);
 		}
 	}
 
-	public void put(MsgObj msg) {
-		AbsMsg m = msg.getMsg();
-		Element e = new Element(getMsgKey(m), msg);
-		this.cache.put(e);
-	}
-
+	/**
+	 * 
+	 * remove:移除消息
+	 *
+	 * @author sid
+	 * @param key
+	 */
 	public void remove(String key) {
 		this.cache.remove(key);
 	}

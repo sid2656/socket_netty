@@ -25,10 +25,10 @@ public class Constants {
 	/**
 	 * 配置文件地址
 	 */
-	private static final String SERVER_CONFIG="server.properties";
+	private static final String SERVER_CONFIG="config.properties";
 	private static final String CLIENT_CONFIG="client.properties";
 	private static final String charset="utf-8";
-	public static final String SERVER_MAC =PropertiesUtil.getProperties(SERVER_CONFIG, charset).getProperty("msg.mac");
+	public static final String SERVER_MAC =PropertiesUtil.getProperties(SERVER_CONFIG, charset).getProperty("server.mac");
 	public static final String CLIENT_MAC =PropertiesUtil.getProperties(CLIENT_CONFIG, charset).getProperty("msg.mac");
 	public static final String HEARTBEATDELAY = PropertiesUtil.getProperties().getProperty("tcp.temheartbeatdelay");
 	

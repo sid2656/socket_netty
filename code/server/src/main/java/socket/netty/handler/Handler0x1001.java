@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import socket.netty.bean.Client;
 import socket.netty.msg.AbsMsg;
-import socket.netty.msg.MSG_0x0002;
+import socket.netty.msg.MSG_0x1001;
 import utils.soket.msg.ClientManager;
 
 /**
@@ -22,8 +22,8 @@ public class Handler0x1001 implements IHandler {
 
 	public void doHandle(AbsMsg m, ChannelHandlerContext ctx) {
 		try {
-			if (m instanceof MSG_0x0002) {
-				logger.info("心跳消息:"+m.getHead().getMac());
+			if (m instanceof MSG_0x1001) {
+				logger.info("位置请求:"+m.getHead().getMac());
 				Client client = ClientManager.getClient(ctx);
 				ClientManager.setClientLastTime(ctx, client);
 			} else {

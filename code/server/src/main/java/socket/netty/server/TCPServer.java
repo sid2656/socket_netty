@@ -1,7 +1,5 @@
 package socket.netty.server;
 
-import org.slf4j.Logger;
-
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
@@ -11,8 +9,17 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+
+import org.slf4j.Logger;
+
+import socket.netty.cache.MsgCache;
 import socket.netty.msg.AbsMsg;
+import socket.netty.server.thread.CheckClientThread;
+import socket.netty.server.thread.CheckTemClientThread;
+import socket.netty.server.thread.ParseMsgThreadManager;
+import utils.soket.msg.Converter;
 import utils.utils.LogUtil;
+import utils.utils.PropertiesUtil;
 
 
 /**
@@ -40,8 +47,6 @@ public class TCPServer extends Thread {
 
 	private TCPServer() {}
 	
-	private int port = 20104;
-
 	public static ChannelHandlerContext chtx;
 	private ChannelFuture cf;
 	private Logger logger = LogUtil.getInstance().getLogger(TCPServer.class);
@@ -52,6 +57,32 @@ public class TCPServer extends Thread {
 			logger.debug("run() - start"); //$NON-NLS-1$
 		}
 
+		init();
+
+
+		// 启动临时客户端管理(秒)
+		CheckTemClientThread.getInstance().run(
+				Integer.parseInt(PropertiesUtil.getProperties().getProperty(
+						"tcp.temclientdelay")),
+				Integer.parseInt(PropertiesUtil.getProperties().getProperty(
+						"tcp.temclientdelay")));
+
+		//启动客户端检查线程
+		CheckClientThread.getInstance().run(
+				Integer.parseInt(PropertiesUtil.getProperties().getProperty(
+						"tcp.clientdelay")),
+				Integer.parseInt(PropertiesUtil.getProperties().getProperty(
+						"tcp.clientdelay")));
+		
+		// 启动消息处理
+		ParseMsgThreadManager.getInstance().run(0,0);
+
+		if (logger.isDebugEnabled()) {
+			logger.debug("run() - end"); //$NON-NLS-1$
+		}
+	}
+
+	private void init() {
 		EventLoopGroup bossGroup = new NioEventLoopGroup(); // (1)
 		EventLoopGroup workerGroup = new NioEventLoopGroup();
 		try {
@@ -69,17 +100,13 @@ public class TCPServer extends Thread {
 					.childOption(ChannelOption.SO_KEEPALIVE, true); // (6)
 
 			// Bind and start to accept incoming connections.
-			cf = b.bind(port).sync(); // (7)
+			cf = b.bind(Integer.parseInt(PropertiesUtil.getProperties().getProperty("serverport"))).sync(); // (7)
 		} catch (InterruptedException e) {
 			logger.error("run()", e); //$NON-NLS-1$
 			e.printStackTrace();
 		} finally {
 			// workerGroup.shutdownGracefully();
 			// bossGroup.shutdownGracefully();
-		}
-
-		if (logger.isDebugEnabled()) {
-			logger.debug("run() - end"); //$NON-NLS-1$
 		}
 	}
 
@@ -106,7 +133,21 @@ public class TCPServer extends Thread {
 	 */
 	public void send(AbsMsg m) {
 		if (chtx != null && chtx.channel().isOpen()) {
+			MsgCache.getInstance().put(m);
 			chtx.channel().write(m);
+			chtx.flush();
+		}
+	}
+
+	/**
+	 * 只发消息不缓存，用于心跳类消息
+	 * 
+	 * @param m
+	 */
+	public void sendWithoutCache(AbsMsg m) {
+		logger.debug("CLINET发送WithoutCache："+Converter.bytes2HexsSpace(m.toBytes()));
+		if (chtx != null && chtx.channel().isOpen()) {
+			chtx.write(m);
 			chtx.flush();
 		}
 	}

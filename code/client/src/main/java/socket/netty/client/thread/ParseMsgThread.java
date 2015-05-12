@@ -6,8 +6,8 @@ import java.util.Date;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import socket.netty.client.cache.MsgCache;
-import socket.netty.client.cache.MsgRespFactory;
+import socket.netty.cache.MsgCache;
+import socket.netty.cache.MsgRespFactory;
 import socket.netty.handler.HandlerFactory;
 import socket.netty.handler.IHandler;
 import socket.netty.msg.AbsMsg;

@@ -1,10 +1,12 @@
 package socket.netty.msg;
 
 import java.util.Arrays;
+import java.util.Date;
 
 import org.slf4j.Logger;
 
 import utils.soket.msg.Converter;
+import utils.utils.DateUtil;
 import utils.utils.LogUtil;
 
 
@@ -24,12 +26,12 @@ public class MSG_0x0001 extends AbsMsg {
 	private String connecttime;
 	private String md5;
 
+
 	@Override
 	public String toString() {
-		return "UP_CONNECT_REQ [ connecttime="
-				+ connecttime + ", getMsgID()=" + getMsgID()
-				+ "]";
+		return "MSG_0x0001 [connecttime=" + connecttime + ", md5=" + md5 + "]";
 	}
+
 
 	@Override
 	protected int getMsgID() {
@@ -46,6 +48,7 @@ public class MSG_0x0001 extends AbsMsg {
 	public byte[] bodytoBytes() {
 		byte[] data = new byte[getBodylen()];
 		try {
+			this.connecttime = DateUtil.dateToStr(new Date(), "yyyyMMddHHmmss");
 			int offset = 0;
 			System.arraycopy(Converter.strToBCD(this.connecttime), 0, data, offset, 7);
 			offset+=7;
@@ -62,8 +65,9 @@ public class MSG_0x0001 extends AbsMsg {
 		boolean resultState = false;
 		int offset = 0;
 		try {
-			this.connecttime = Converter.BCDToStr(Arrays.copyOfRange(b, offset, offset+7));
+			this.connecttime = Converter.BCDToStr(Arrays.copyOfRange(b, offset, 7));
 			offset+=7;
+			this.md5 = Converter.toGBKString(Arrays.copyOfRange(b, offset, 32));
 			resultState = true;
 		} catch (Exception e) {
 			LogUtil.getInstance().getLogger(MSG_0x0001.class).error("登录消息fromBytes转换异常",e);

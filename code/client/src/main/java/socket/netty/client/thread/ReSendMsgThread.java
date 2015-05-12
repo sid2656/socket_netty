@@ -9,9 +9,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import socket.netty.bean.AbsThread;
+import socket.netty.cache.MsgCache;
+import socket.netty.cache.MsgObj;
 import socket.netty.client.TcpClient;
-import socket.netty.client.cache.MsgCache;
-import socket.netty.client.cache.MsgObj;
 
 public class ReSendMsgThread extends AbsThread {
 

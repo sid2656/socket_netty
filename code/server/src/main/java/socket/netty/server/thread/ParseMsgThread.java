@@ -71,16 +71,6 @@ public class ParseMsgThread extends Thread {
 		buffer1.position(b.length - 2);
 		buffer1.get(crc);
 
-//		byte[] crc_check = CRC16_CUI.getCRCCRC16_CCITT(head_body);
-//
-//		if (Converter.bigBytes2Unsigned16Int(crc, 0) != Converter
-//				.bigBytes2Unsigned16Int(crc_check, 0)) {
-//			logger.info(Converter.bigBytes2Unsigned16Int(crc, 0) + "  "
-//					+ Converter.bigBytes2Unsigned16Int(crc_check, 0));
-//			logger.error("消息crc校验码不正确");
-//			return null;// crc校验码有误
-//		}
-
 		MsgHeader head = new MsgHeader();
 		if (!head.frombytes(head_body))
 			return null;// 消息头属性解析有误

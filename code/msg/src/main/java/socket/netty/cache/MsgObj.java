@@ -8,7 +8,7 @@
  *
 */
 
-package socket.netty.client.cache;
+package socket.netty.cache;
 
 import java.io.Serializable;
 import java.util.Date;

@@ -1,4 +1,4 @@
-package socket.netty.client.cache;
+package socket.netty.cache;
 
 import java.nio.ByteBuffer;
 
@@ -45,7 +45,7 @@ public class MsgRespFactory {
 		/**
 		 * 如果有子业务类型的把子业务类型放进消息头里面方便handle使用
 		 */
-		head.setMsgid(msg_id);
+		head.setMsgid((short)msg_id);
 		switch (msg_id) {
 			case MessageID.MSG_0x0001:
 				m = new MSG_0x0001();

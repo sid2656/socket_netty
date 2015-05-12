@@ -11,11 +11,13 @@ public abstract class AbsMsg implements Serializable {
 
 	protected MsgHeader head;
 
-	static int seq = Integer.MIN_VALUE;
+	public volatile static int seq = Integer.MIN_VALUE;
+	// 消息长度
+	ByteBuffer buffer = ByteBuffer.allocate(10*1024*1024);
 
 	public AbsMsg() {
 		this.head = new MsgHeader();
-		this.head.setMsgid((byte) getMsgID());
+		this.head.setMsgid((short) getMsgID());
 //		byte[] fs = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 //				0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 //		String persist = new String(fs);
@@ -25,8 +27,6 @@ public abstract class AbsMsg implements Serializable {
 	}
 
 	public byte[] toBytes() {
-		// 消息长度
-		ByteBuffer bb = ByteBuffer.allocate(1024);
 
 		// 消息内容
 		this.head.setLength((short) (getBodylen() + this.head
@@ -42,26 +42,62 @@ public abstract class AbsMsg implements Serializable {
 		for (byte bt : body) {
 			xor ^= bt;
 		}
+		
+		head = encode(head);
+		body = encode(body);
 
-		// 保存消息头
-		bb.put(head);
-		// 消息体
-		bb.put(body);
-		// 校验位
-		bb.put(xor);
+		buffer.position(0);
+		buffer.put((byte) 0x5b);
+		buffer.put(head);
+		buffer.put(body);
+		buffer.put(xor);
+		buffer.put((byte) 0x5d);
 
-		byte[] b = new byte[bb.position()];
-		bb.position(0);
-		bb.get(b);
+		byte[] b = new byte[buffer.position()];
+		buffer.position(0);
+		buffer.get(b);
 
 		return b;
 
 	}
 
+	/**
+	 * 编码转义
+	 * 
+	 * @param bytes
+	 * @return
+	 */
+	private byte[] encode(byte[] bytes) {
+
+		buffer.position(0);
+		for (byte b : bytes) {
+			if (b == 0x5b) {
+				buffer.put((byte) 0x5a);
+				buffer.put((byte) 0x01);
+			} else if (b == 0x5a) {
+				buffer.put((byte) 0x5a);
+				buffer.put((byte) 0x02);
+			} else if (b == 0x5d) {
+				buffer.put((byte) 0x5e);
+				buffer.put((byte) 0x01);
+			} else if (b == 0x5e) {
+				buffer.put((byte) 0x5e);
+				buffer.put((byte) 0x02);
+			} else {
+				buffer.put(b);
+			}
+		}
+
+		byte[] result = new byte[buffer.position()];
+		buffer.position(0);
+		buffer.get(result);
+		return result;
+	}
+
 	public boolean fromBytes(byte[] bs) {
 		byte xor = 0;
 		 // 计算 校验位
-		for (int i = 0; i < bs.length  -1 ; i++) {
+		for (int i = 1; i < bs.length  -1 ; i++) {
 			xor ^= bs[i];
 		}
 

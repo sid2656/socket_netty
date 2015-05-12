@@ -1,6 +1,8 @@
 package socket.netty.msg;
 
+
 public class MessageID {
+	
 	/**登录**/
 	public static final short MSG_0x0001 = 0x0001;
 	/**心跳**/
@@ -13,4 +15,5 @@ public class MessageID {
 	public static final short MSG_0x2001 = 0x2001;
 	/**服务器端通用应答**/
 	public static final short MSG_0x3003 = 0x3003;
+	
 }

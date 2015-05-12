@@ -33,6 +33,7 @@ public class Handler0x0001 implements IHandler {
 
 	public void doHandle(AbsMsg m, ChannelHandlerContext ctx) {
 		MSG_0x3003 response = new MSG_0x3003();
+		logger.info("处理登录消息");
 		try {
 			if (m instanceof MSG_0x0001) {
 				MSG_0x0001 msg = (MSG_0x0001) m;
@@ -47,7 +48,7 @@ public class Handler0x0001 implements IHandler {
 					response.setState((byte)1);
 					response.setErrormsg("mac校验错误");
 				}
-				TCPServer.getSingletonInstance().send(response);
+				TCPServer.getSingletonInstance().sendWithoutCache(response);
 			} else {
 				logger.error("登录消息强转失败:"+m.toString());
 			}

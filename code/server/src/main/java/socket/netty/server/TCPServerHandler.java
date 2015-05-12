@@ -42,6 +42,7 @@ public class TCPServerHandler extends ChannelInboundHandlerAdapter {
 
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) {
+		logger.info("服务器收到消息：");
 		try {
 			if (msg instanceof byte[]) {
 				final byte[] msgbytes = (byte[]) msg;
@@ -60,35 +61,50 @@ public class TCPServerHandler extends ChannelInboundHandlerAdapter {
 	}
 
 	@Override
-	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) { // (4)
-		cause.printStackTrace();
-		ctx.close();
+	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+		logger.info("-------------连接异常关闭--------------");
+		try {
+			cause.printStackTrace();
+			ctx.close();
+			ClientManager.removeClient(ctx);
+			ClientManager.removeTemClient(ctx);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	public void channelActive(ChannelHandlerContext chtx) throws Exception {
-		super.channelActive(chtx);
-		logger.info("-------------临时客户端建立连接--------------");
-		ClientManager.addTemClient(chtx);
+		try {
+			super.channelActive(chtx);
+			logger.info("-------------临时客户端建立连接--------------");
+			TCPServer.setChtx(chtx);
+			ClientManager.addTemClient(chtx);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+		try {
+			super.channelInactive(ctx);
+			TCPServer.getChtx().close();
+			TCPServerHandler.isrunning=false;
+			TCPServerHandler.timer.cancel();
 
-		super.channelInactive(ctx);
-		TCPServer.getChtx().close();
-		TCPServerHandler.isrunning=false;
-		TCPServerHandler.timer.cancel();
-
-		InetSocketAddress address = (InetSocketAddress) ctx.channel()
-				.remoteAddress();
-		InetAddress inetAdd = address.getAddress();
-		logger.info("客户端断开连接：" + ctx.name() 
-				+ ",IP:" + inetAdd.getHostAddress()
-				+ ",port:" + address.getPort());
-		// 记录日志
-		ClientManager.removeClient(ctx);
-		ClientManager.removeTemClient(ctx);
+			InetSocketAddress address = (InetSocketAddress) ctx.channel()
+					.remoteAddress();
+			InetAddress inetAdd = address.getAddress();
+			logger.info("客户端断开连接：" + ctx.name() 
+					+ ",IP:" + inetAdd.getHostAddress()
+					+ ",port:" + address.getPort());
+			// 记录日志
+			ClientManager.removeClient(ctx);
+			ClientManager.removeTemClient(ctx);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 }

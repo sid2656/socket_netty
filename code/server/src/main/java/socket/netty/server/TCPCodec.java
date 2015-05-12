@@ -27,6 +27,7 @@ public class TCPCodec extends ByteToMessageCodec<AbsMsg> {
 	@Override
 	protected void decode(ChannelHandlerContext ctx, ByteBuf buffer,
 			List<Object> out) throws Exception {
+		logger.info("开始解码：");
 		try {
 			while (buffer.readableBytes() > 0) {
 				byte b = buffer.readByte();

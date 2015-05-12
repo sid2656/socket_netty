@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import socket.netty.msg.AbsMsg;
+import utils.soket.msg.Converter;
 
 
 /**
@@ -56,8 +57,8 @@ public class TcpCodec extends ByteToMessageCodec<AbsMsg> {
 	protected void encode(ChannelHandlerContext ctx, AbsMsg msg, ByteBuf out)
 			throws Exception {
 		byte[] bt = msg.toBytes();
+		logger.info("编码结果："+Converter.bytes2Hexs(bt));
 		out.writeBytes(bt);
-
 	}
 
 }

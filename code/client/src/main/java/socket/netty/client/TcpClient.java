@@ -12,8 +12,6 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 
-import java.util.Properties;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,11 +55,11 @@ public class TcpClient extends Thread {
 	public ChannelFuture cf;
 
 	private int heartbeatdelay = Integer.parseInt(PropertiesUtil
-			.getProperties().getProperty("heartbeatdelay"));// 心跳间隔
+			.getProperties().getProperty("tcp.heartbeatdelay"));// 心跳间隔
 	private int reconnectdealy = Integer.parseInt(PropertiesUtil
-			.getProperties().getProperty("reconnectdealy"));
+			.getProperties().getProperty("tcp.reconnectdealy"));
 	private int resendmsgdealy = Integer.parseInt(PropertiesUtil
-			.getProperties().getProperty("resendmsgdealy"));
+			.getProperties().getProperty("tcp.resendmsgdealy"));
 	private int connstate = 0;
 
 	public void reconnect() {
@@ -86,7 +84,6 @@ public class TcpClient extends Thread {
 
 	private void init() {
 		EventLoopGroup group = new NioEventLoopGroup();
-		Properties p = PropertiesUtil.getProperties();
 		try {
 //			final LogLevel loglevel = LogLevel.valueOf(p.getProperty("_loglevel").toUpperCase());
 			Bootstrap b = new Bootstrap();
@@ -102,8 +99,8 @@ public class TcpClient extends Thread {
 					});
 
 			b.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000);
-			cf = b.connect(p.getProperty("_hostname"),
-					Integer.parseInt(p.getProperty("_hostport"))).sync();
+			cf = b.connect(PropertiesUtil.getProperties().getProperty("serverip"),
+					Integer.parseInt(PropertiesUtil.getProperties().getProperty("serverport"))).sync();
 			// cf.channel().closeFuture().sync();
 			ParseMsgThreadManager.getInstance().run(0, 0);
 		} catch (InterruptedException e) {
