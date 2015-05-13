@@ -24,7 +24,7 @@ public class Handler0x0003 implements IHandler {
 			if (m instanceof MSG_0x0003) {
 				MSG_0x0003 msg = (MSG_0x0003)m;
 				logger.info("通用应答："+msg.getMsgid());
-				MsgCache.getInstance().remove(MsgCache.getMsgKey(msg));
+				MsgCache.getInstance().remove(msg.getMsgid()+";"+msg.getHead().getSeq());
 			} else {
 				logger.error("登录消息强转失败:"+m.toString());
 			}

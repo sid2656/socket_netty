@@ -6,7 +6,6 @@ import java.util.Date;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import socket.netty.cache.MsgCache;
 import socket.netty.handler.HandlerFactory;
 import socket.netty.handler.IHandler;
 import socket.netty.msg.AbsMsg;
@@ -44,8 +43,6 @@ public class ParseMsgThread extends Thread {
 			if (head == null) {
 				return;
 			}
-			//去除消息缓存
-			MsgCache.getInstance().remove(MsgCache.getMsgKey(head));
 
 			// 生成消息后产生handler
 			AbsMsg msg = MsgFactory.genMsg(head, msgbytes);

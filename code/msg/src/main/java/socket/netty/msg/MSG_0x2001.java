@@ -49,7 +49,7 @@ public class MSG_0x2001 extends AbsMsg {
 			offset+=8;
 			System.arraycopy(Converter.getBytes(this.sjhm), 0, data, offset, 11);
 			offset+=11;
-			System.arraycopy(Converter.getBytes(this.jdkh), 0, data, offset, 19);
+			System.arraycopy(Converter.getBytes(this.jdkh), 0, data, offset, 18);
 			offset+=19;
 			System.arraycopy(Converter.strToBCD(this.jdsj), 0, data, offset, 7);
 			offset+=7;
@@ -72,7 +72,7 @@ public class MSG_0x2001 extends AbsMsg {
 			offset+=8;
 			this.sjhm = Converter.toGBKString(data, offset, 11);
 			offset+=11;
-			this.jdkh = Converter.toGBKString(data, offset, 19);
+			this.jdkh = Converter.toGBKString(data, offset, 18);
 			offset+=19;
 			this.jdkh = Converter.BCDToStr(Arrays.copyOfRange(data, offset, 7));
 			offset+=7;
@@ -85,5 +85,53 @@ public class MSG_0x2001 extends AbsMsg {
 			e.printStackTrace();
 		}
 		return resultState;
+	}
+
+	public String getCphm() {
+		return cphm;
+	}
+
+	public void setCphm(String cphm) {
+		this.cphm = cphm;
+	}
+
+	public String getSjhm() {
+		return sjhm;
+	}
+
+	public void setSjhm(String sjhm) {
+		this.sjhm = sjhm;
+	}
+
+	public String getJdkh() {
+		return jdkh;
+	}
+
+	public void setJdkh(String jdkh) {
+		this.jdkh = jdkh;
+	}
+
+	public String getJdsj() {
+		return jdsj;
+	}
+
+	public void setJdsj(String jdsj) {
+		this.jdsj = jdsj;
+	}
+
+	public long getCljd() {
+		return cljd;
+	}
+
+	public void setCljd(long cljd) {
+		this.cljd = cljd;
+	}
+
+	public long getClwd() {
+		return clwd;
+	}
+
+	public void setClwd(long clwd) {
+		this.clwd = clwd;
 	}
 }

@@ -12,29 +12,33 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<sidland.version>0.0.1-SNAPSHOT</sidland.version>
+		<netty.version>4.0.18.Final</netty.version>
+		<commons.version>2.6</commons.version>
+		<junit.version>3.8.1</junit.version>
 	</properties>
 
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>3.8.1</version>
+			<version>${junit.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>utils.cache</groupId>
 			<artifactId>ehcache</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>${sidland.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.netty</groupId>
 			<artifactId>netty-all</artifactId>
-			<version>4.0.18.Final</version>
+			<version>${netty.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
-			<version>2.6</version>
+			<version>${commons.version}</version>
 		</dependency>
 	</dependencies>
 </project>

@@ -2,13 +2,17 @@ package socket.netty.handler;
 
 import io.netty.channel.ChannelHandlerContext;
 
+import java.util.Date;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import socket.netty.bean.Client;
 import socket.netty.msg.AbsMsg;
 import socket.netty.msg.MSG_0x1001;
-import utils.soket.msg.ClientManager;
+import socket.netty.msg.MSG_0x2001;
+import socket.netty.msg.MSG_0x3003;
+import socket.netty.server.TCPServer;
+import utils.utils.DateUtil;
 
 /**
  * 
@@ -24,8 +28,22 @@ public class Handler0x1001 implements IHandler {
 		try {
 			if (m instanceof MSG_0x1001) {
 				logger.info("位置请求:"+m.getHead().getMac());
-				Client client = ClientManager.getClient(ctx);
-				ClientManager.setClientLastTime(ctx, client);
+				//通用应答
+				MSG_0x3003 response = new MSG_0x3003();
+				response.setMsgid(m.getHead().getMsgid());
+				response.setState((byte)1);
+				response.getHead().setSeq(m.getHead().getSeq());
+				TCPServer.getSingletonInstance().sendWithoutCache(response);
+				//获取对应信息并处理
+				MSG_0x2001 request = new MSG_0x2001();
+//				double[] wgs84ToBD09 = EvilTransform.WGS84ToBD09(12345615, 125645891);
+				request.setCljd(12323l);
+				request.setClwd(45645l);
+				request.setCphm("京B12345");
+				request.setJdkh("221548198811125454");
+				request.setJdsj(DateUtil.dateToStr(new Date(), "yyyyMMddHHmmss"));
+				request.setSjhm("12345678901");
+				TCPServer.getSingletonInstance().send(request);
 			} else {
 				logger.error("登录消息强转失败:"+m.toString());
 			}
