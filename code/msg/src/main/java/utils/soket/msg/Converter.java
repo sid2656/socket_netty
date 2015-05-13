@@ -305,11 +305,11 @@ public class Converter {
 	 * 
 	 * @param b
 	 * @param startIndex
-	 * @param length
+	 * @param toIndex
 	 * @return
 	 */
-	public static String toGBKString(byte[] b, int startIndex, int length) {
-		return toGBKString(Arrays.copyOfRange(b, startIndex, length));
+	public static String toGBKString(byte[] b, int startIndex, int toIndex) {
+		return toGBKString(Arrays.copyOfRange(b, startIndex, toIndex));
 	}
 	
 

@@ -1,4 +1,4 @@
-package socket.netty.server;
+package utils.soket.msg;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -22,7 +22,7 @@ public class TCPCodec extends ByteToMessageCodec<AbsMsg> {
 	private static final byte HeadFlag = 0x5b;
 	private static final byte EndFlag = 0x5d;
 	private static final Logger logger = LoggerFactory.getLogger(TCPCodec.class);
-	private ByteBuffer bf = ByteBuffer.allocate(10*1024*1024);
+	private ByteBuffer bf = ByteBuffer.allocate(1024);
 	
 	@Override
 	protected void decode(ChannelHandlerContext ctx, ByteBuf buffer,
@@ -33,14 +33,12 @@ public class TCPCodec extends ByteToMessageCodec<AbsMsg> {
 				byte b = buffer.readByte();
 				bf.put(b);
 				if(b==EndFlag){
-					byte[] bytes = new byte[bf.position()-2];
-					byte[] msgbytes = new byte[bf.position()];
-					if(bf.get(0)==HeadFlag){
+					byte[] bytes = new byte[bf.position()-Constants.SIGN_STAR_LENGTH-Constants.SIGN_END_LENGTH];
+					if(bf.get(0)==HeadFlag){//找到头尾后去除
 						bf.position(1);
 						bf.get(bytes);
-						bf.position(0);
-						bf.get(msgbytes);
 						out.add(bytes);
+						bytes = null;
 					}
 					bf.clear();
 				}
@@ -55,6 +53,7 @@ public class TCPCodec extends ByteToMessageCodec<AbsMsg> {
 	protected void encode(ChannelHandlerContext ctx, AbsMsg msg, ByteBuf out)
 			throws Exception {
 		byte[] bt = msg.toBytes();
+		logger.info("发送消息："+Converter.bytes2HexsSpace(bt));
 		out.writeBytes(bt);
 	}
 }

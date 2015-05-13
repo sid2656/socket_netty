@@ -11,7 +11,7 @@ public abstract class AbsMsg implements Serializable {
 
 	protected MsgHeader head;
 
-	public volatile static int seq = Integer.MIN_VALUE;
+	public volatile static int seq = 0;
 	// 消息长度
 	ByteBuffer buffer = ByteBuffer.allocate(10*1024*1024);
 
@@ -22,6 +22,8 @@ public abstract class AbsMsg implements Serializable {
 //				0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 //		String persist = new String(fs);
 		this.head.setMac(Constants.SERVER_MAC);
+		if(seq==Integer.MAX_VALUE)
+			seq=0;
 		this.head.setSeq(seq++);
 
 	}
@@ -29,8 +31,8 @@ public abstract class AbsMsg implements Serializable {
 	public byte[] toBytes() {
 
 		// 消息内容
-		this.head.setLength((short) (getBodylen() + this.head
-				.getLength()+1));
+		this.head.setLength(Constants.SIGN_STAR_LENGTH + Constants.HEAD_LENGTH + getBodylen() 
+				+ Constants.SIGN_LENGTH + Constants.SIGN_END_LENGTH);
 		byte[] head = this.head.tobytes();
 		byte[] body = bodytoBytes();
 
@@ -92,26 +94,6 @@ public abstract class AbsMsg implements Serializable {
 		buffer.position(0);
 		buffer.get(result);
 		return result;
-	}
-
-	public boolean fromBytes(byte[] bs) {
-		byte xor = 0;
-		 // 计算 校验位
-		for (int i = 1; i < bs.length  -1 ; i++) {
-			xor ^= bs[i];
-		}
-
-		// 判断 校验位
-		if (xor != bs[bs.length - 1])
-			return false;
-
-		// 解析消息
-		this.head = new MsgHeader();
-		if (!this.head.frombytes(bs))
-			return false;
-		if (!bodyfrombytes(bs))
-			return false;
-		return true;
 	}
 
 	protected abstract int getMsgID();

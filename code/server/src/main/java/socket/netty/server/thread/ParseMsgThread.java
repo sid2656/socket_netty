@@ -39,6 +39,7 @@ public class ParseMsgThread extends Thread {
 			if (head == null) {
 				return;
 			}
+			logger.info("消息头："+head.toString());
 			
 			// 生成消息后产生handler
 			AbsMsg msg = MsgFactory.genMsg(head, rpb.getMsgbytes());
@@ -46,6 +47,7 @@ public class ParseMsgThread extends Thread {
 				logger.error(Integer.toHexString(head.getMsgid()) + "消息不存在");
 				return;
 			}
+			logger.info("消息体："+msg.toString());
 			// 交给对应handler处理
 			IHandler handler = HandlerFactory.getHandler(msg);
 			if (handler != null) {

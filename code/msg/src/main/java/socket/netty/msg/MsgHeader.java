@@ -2,21 +2,21 @@ package socket.netty.msg;
 
 import java.io.Serializable;
 
+import utils.soket.msg.Constants;
 import utils.soket.msg.Converter;
 import utils.utils.LogUtil;
 
 public class MsgHeader implements Serializable {
 	private static final long serialVersionUID = 1L;
-	public int HEAD_LENGTH = 13;
 	private short msgid; //消息ID
 	private long seq; //从 0 开始累加
 	private String mac; //接入平台标识
-	private int length; //剩余消息总长度
+	private int length; //消息总长度
 
 
 	public byte[] tobytes() {
 
-		byte[] data = new byte[getLength()];
+		byte[] data = new byte[Constants.HEAD_LENGTH];
 		try {
 			int offset = 0;
 			System.arraycopy(Converter.toByteArray16Int(this.msgid), 0, data, offset, 2);
@@ -26,6 +26,7 @@ public class MsgHeader implements Serializable {
 //			this.mac = Converter.fillDataPrefix(this.mac, 6, "0");
 			System.arraycopy(Converter.getBytes(this.mac), 0, data, offset, 6);
 			offset+=6;
+			this.length = getLength();
 			System.arraycopy(Converter.toByteArray16Int(this.length), 0, data, offset, 2);
 		} catch (Exception e) {
 			LogUtil.getInstance().getLogger(MSG_0x0001.class).error("消息头toBytes转换异常",e);
@@ -47,7 +48,7 @@ public class MsgHeader implements Serializable {
 			offset+=2;
 			this.seq = Converter.bytes2Unsigned32Long(data, offset);
 			offset+=4;
-			this.mac = Converter.toGBKString(data, offset, 6);
+			this.mac = Converter.toGBKString(data, offset, offset+6);
 			offset += 6;
 			this.length = Converter.bigBytes2Unsigned16Int(data, offset);
 			offset+=2;
@@ -82,6 +83,12 @@ public class MsgHeader implements Serializable {
 	}
 	public void setLength(int length) {
 		this.length = length;
+	}
+
+	@Override
+	public String toString() {
+		return "MsgHeader [msgid=" + msgid + ", seq=" + seq + ", mac=" + mac
+				+ ", length=" + length + "]";
 	}
 
 }

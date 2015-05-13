@@ -32,5 +32,11 @@ public class Constants {
 	public static final String CLIENT_MAC =PropertiesUtil.getProperties(CLIENT_CONFIG, charset).getProperty("msg.mac");
 	public static final String HEARTBEATDELAY = PropertiesUtil.getProperties().getProperty("tcp.temheartbeatdelay");
 	
+	public static final int HEAD_LENGTH = 14;
+	public static final int SIGN_STAR_LENGTH = 1;
+	public static final int SIGN_END_LENGTH = 1;
+	public static final int SIGN_LENGTH = 1;
+	
+	
 }
 

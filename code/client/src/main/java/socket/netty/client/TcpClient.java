@@ -22,6 +22,7 @@ import socket.netty.client.thread.ReSendMsgThread;
 import socket.netty.msg.AbsMsg;
 import socket.netty.msg.MSG_0x0001;
 import utils.soket.msg.Converter;
+import utils.soket.msg.TCPCodec;
 import utils.utils.PropertiesUtil;
 
 public class TcpClient extends Thread {
@@ -92,7 +93,7 @@ public class TcpClient extends Thread {
 						@Override
 						protected void initChannel(SocketChannel ch)
 								throws Exception {
-							ch.pipeline().addLast(new TcpCodec(),
+							ch.pipeline().addLast(new TCPCodec(),
 //									new LoggingHandler(loglevel),
 									new TcpClientHandler());
 						}
@@ -150,7 +151,7 @@ public class TcpClient extends Thread {
 	 */
 	public void send(AbsMsg m) {
 		if (this.isLogined) {
-			logger.debug("CLINET发送："+Converter.bytes2HexsSpace(m.toBytes()));
+			logger.debug("CLINET发送："+m.toString());
 			if (chtx != null && chtx.channel().isOpen()) {
 				chtx.write(m);
 				chtx.flush();
@@ -187,7 +188,7 @@ public class TcpClient extends Thread {
 			if (chtx != null && chtx.channel().isOpen()) {
 				chtx.write(m);
 				chtx.flush();
-				logger.info("-------------发送登录消息--------------");
+				logger.info("-------------发送登录消息--------------"+m.toString());
 			}
 
 		} catch (Exception e) {

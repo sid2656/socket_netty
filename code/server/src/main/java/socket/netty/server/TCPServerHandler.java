@@ -42,7 +42,6 @@ public class TCPServerHandler extends ChannelInboundHandlerAdapter {
 
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) {
-		logger.info("服务器收到消息：");
 		try {
 			if (msg instanceof byte[]) {
 				final byte[] msgbytes = (byte[]) msg;

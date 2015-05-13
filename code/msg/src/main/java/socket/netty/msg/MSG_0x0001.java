@@ -29,7 +29,8 @@ public class MSG_0x0001 extends AbsMsg {
 
 	@Override
 	public String toString() {
-		return "MSG_0x0001 [connecttime=" + connecttime + ", md5=" + md5 + "]";
+		return "MSG_0x0001 [connecttime=" + connecttime + ", md5=" + md5
+				+ ", head=" + head + "]";
 	}
 
 
@@ -49,10 +50,11 @@ public class MSG_0x0001 extends AbsMsg {
 		byte[] data = new byte[getBodylen()];
 		try {
 			this.connecttime = DateUtil.dateToStr(new Date(), "yyyyMMddHHmmss");
+			this.md5 = Converter.MD5UTF8(this.connecttime+this.head.getMac());
 			int offset = 0;
 			System.arraycopy(Converter.strToBCD(this.connecttime), 0, data, offset, 7);
 			offset+=7;
-			System.arraycopy(Converter.getBytes(Converter.MD5UTF8(this.connecttime+this.head.getMac())), 0, data, offset, 32);
+			System.arraycopy(Converter.getBytes(this.md5), 0, data, offset, 32);
 		} catch (Exception e) {
 			logger.error("登录消息toBytes转换异常",e);
 			e.printStackTrace();
@@ -65,9 +67,9 @@ public class MSG_0x0001 extends AbsMsg {
 		boolean resultState = false;
 		int offset = 0;
 		try {
-			this.connecttime = Converter.BCDToStr(Arrays.copyOfRange(b, offset, 7));
+			this.connecttime = Converter.BCDToStr(Arrays.copyOfRange(b, offset, offset+7));
 			offset+=7;
-			this.md5 = Converter.toGBKString(Arrays.copyOfRange(b, offset, 32));
+			this.md5 = Converter.toGBKString(Arrays.copyOfRange(b, offset, offset+32));
 			resultState = true;
 		} catch (Exception e) {
 			LogUtil.getInstance().getLogger(MSG_0x0001.class).error("登录消息fromBytes转换异常",e);
