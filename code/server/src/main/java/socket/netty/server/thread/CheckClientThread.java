@@ -31,16 +31,23 @@ public class CheckClientThread extends AbsThread {
 
 	@Override
 	public void runThread(long delay, long period) {
-		timer.schedule(new TimerTask() {
-			@Override
-			public void run() {
-				try{
-					ClientManager.checkClient();
-				}catch(Exception e){
-					logger.error("检查登陆客户端异常:",e);
+		timer = new Timer();
+		try {
+			timer.schedule(new TimerTask() {
+				@Override
+				public void run() {
+					try{
+						ClientManager.checkClient();
+					}catch(Exception e){
+						logger.error("检查登陆客户端异常:",e);
+					}
 				}
-			}
-		}, delay * 1000, period * 1000);
+			}, delay * 1000, period * 1000);
+		} catch (Exception e) {
+			logger.info("检查客户端线程异常：",e);
+			e.printStackTrace();
+			
+		}
 
 	}
 

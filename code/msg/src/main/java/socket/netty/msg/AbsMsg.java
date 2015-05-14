@@ -3,11 +3,17 @@ package socket.netty.msg;
 import java.io.Serializable;
 import java.nio.ByteBuffer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import utils.soket.msg.Constants;
 
 
 public abstract class AbsMsg implements Serializable {
 	private static final long serialVersionUID = 1L;
+
+	private static final Logger logger = LoggerFactory
+			.getLogger(AbsMsg.class);
 
 	protected MsgHeader head;
 
@@ -30,34 +36,40 @@ public abstract class AbsMsg implements Serializable {
 
 	public byte[] toBytes() {
 
-		// 消息内容
-		this.head.setLength(Constants.SIGN_STAR_LENGTH + Constants.HEAD_LENGTH + getBodylen() 
-				+ Constants.SIGN_LENGTH + Constants.SIGN_END_LENGTH);
-		byte[] head = this.head.tobytes();
-		byte[] body = bodytoBytes();
+		byte[] b = new byte[0];
+		try {
+			// 消息内容
+			this.head.setLength(Constants.SIGN_STAR_LENGTH + Constants.HEAD_LENGTH + getBodylen() 
+					+ Constants.SIGN_LENGTH + Constants.SIGN_END_LENGTH);
+			byte[] head = this.head.tobytes();
+			byte[] body = bodytoBytes();
 
-		// 计算 校验位
-		byte xor = 0;
-		for (byte bt : head) {
-			xor ^= bt;
+			// 计算 校验位
+			byte xor = 0;
+			for (byte bt : head) {
+				xor ^= bt;
+			}
+			for (byte bt : body) {
+				xor ^= bt;
+			}
+			
+			head = encode(head);
+			body = encode(body);
+
+			buffer.position(0);
+			buffer.put((byte) 0x5b);
+			buffer.put(head);
+			buffer.put(body);
+			buffer.put(xor);
+			buffer.put((byte) 0x5d);
+
+			b = new byte[buffer.position()];
+			buffer.position(0);
+			buffer.get(b);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("toBytes异常：",e);
 		}
-		for (byte bt : body) {
-			xor ^= bt;
-		}
-		
-		head = encode(head);
-		body = encode(body);
-
-		buffer.position(0);
-		buffer.put((byte) 0x5b);
-		buffer.put(head);
-		buffer.put(body);
-		buffer.put(xor);
-		buffer.put((byte) 0x5d);
-
-		byte[] b = new byte[buffer.position()];
-		buffer.position(0);
-		buffer.get(b);
 
 		return b;
 

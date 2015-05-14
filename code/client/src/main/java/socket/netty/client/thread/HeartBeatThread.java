@@ -41,17 +41,18 @@ public class HeartBeatThread extends AbsThread {
 
 	@Override
 	protected void runThread(long delay, long period) {
+		timer = new Timer();
 		try {
 			timer.schedule(new TimerTask() {
 				@Override
 				public void run() {
-					logger.debug("给upa服务发送心跳");
+					logger.debug("给服务发送心跳");
 					MSG_0x0002 m = new MSG_0x0002();
-					TcpClient.getInstance().send(m);
+					TcpClient.getInstance().sendWithoutCache(m);
 				}
 			}, delay, period);
 		} catch (Exception e) {
-			logger.info("发送upa心跳消息异常：",e);
+			logger.info("发送心跳消息异常：",e);
 			e.printStackTrace();
 		}
 

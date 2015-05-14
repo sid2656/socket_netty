@@ -31,6 +31,13 @@ public class MSG_0x2001 extends AbsMsg {
 	private long clwd;
 
 	@Override
+	public String toString() {
+		return "MSG_0x2001 [logger=" + logger + ", cphm=" + cphm + ", sjhm="
+				+ sjhm + ", jdkh=" + jdkh + ", jdsj=" + jdsj + ", cljd=" + cljd
+				+ ", clwd=" + clwd + ", head=" + head + "]";
+	}
+
+	@Override
 	protected int getMsgID() {
 		return MessageID.MSG_0x2001;
 	}
@@ -50,12 +57,12 @@ public class MSG_0x2001 extends AbsMsg {
 			System.arraycopy(Converter.getBytes(this.sjhm), 0, data, offset, 11);
 			offset+=11;
 			System.arraycopy(Converter.getBytes(this.jdkh), 0, data, offset, 18);
-			offset+=19;
+			offset+=18;
 			System.arraycopy(Converter.strToBCD(this.jdsj), 0, data, offset, 7);
 			offset+=7;
-			System.arraycopy(Converter.toByteArray(this.cljd), 0, data, offset, 32);
-			offset+=32;
-			System.arraycopy(Converter.toByteArray(this.clwd), 0, data, offset, 32);
+			System.arraycopy(Converter.toByteArray32Long(this.cljd), 0, data, offset, 4);
+			offset+=4;
+			System.arraycopy(Converter.toByteArray32Long(this.clwd), 0, data, offset, 4);
 		} catch (Exception e) {
 			logger.error("位置消息toBytes转换异常",e);
 			e.printStackTrace();
@@ -68,20 +75,20 @@ public class MSG_0x2001 extends AbsMsg {
 		boolean resultState = false;
 		int offset = 0;
 		try {
-			this.cphm = Converter.toGBKString(data, offset, 8);
+			this.cphm = Converter.toGBKString(data, offset, offset+8);
 			offset+=8;
-			this.sjhm = Converter.toGBKString(data, offset, 11);
+			this.sjhm = Converter.toGBKString(data, offset, offset+11);
 			offset+=11;
-			this.jdkh = Converter.toGBKString(data, offset, 18);
-			offset+=19;
-			this.jdkh = Converter.BCDToStr(Arrays.copyOfRange(data, offset, 7));
+			this.jdkh = Converter.toGBKString(data, offset, offset+18);
+			offset+=18;
+			this.jdsj = Converter.BCDToStr(Arrays.copyOfRange(data, offset, offset+7));
 			offset+=7;
 			this.cljd = Converter.bytes2Unsigned32Long(data, offset);
 			offset+=32;
 			this.clwd = Converter.bytes2Unsigned32Long(data, offset);
 			resultState = true;
 		} catch (Exception e) {
-			LogUtil.getInstance().getLogger(MSG_0x0001.class).error("登录消息fromBytes转换异常",e);
+			LogUtil.getInstance().getLogger(MSG_0x2001.class).error("位置消息fromBytes转换异常",e);
 			e.printStackTrace();
 		}
 		return resultState;

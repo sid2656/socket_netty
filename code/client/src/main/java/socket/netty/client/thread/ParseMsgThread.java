@@ -12,6 +12,7 @@ import socket.netty.msg.AbsMsg;
 import socket.netty.msg.MsgFactory;
 import socket.netty.msg.MsgHeader;
 import socket.netty.msg.ReciPackBean;
+import utils.soket.msg.Constants;
 
 /**
  * 处理消息线程
@@ -68,13 +69,9 @@ public class ParseMsgThread extends Thread {
 	 */
 	private MsgHeader headFromBytes(byte[] b) {
 		ByteBuffer buffer1 = ByteBuffer.wrap(b);
-		byte[] head_body = new byte[b.length - 2];
+		byte[] head_body = new byte[Constants.HEAD_LENGTH];
 		buffer1.position(0);
 		buffer1.get(head_body);
-
-		byte[] crc = new byte[2];
-		buffer1.position(b.length - 2);
-		buffer1.get(crc);
 
 		MsgHeader head = new MsgHeader();
 		if (!head.frombytes(head_body))

@@ -42,10 +42,10 @@ public class Handler0x0001 implements IHandler {
 				//TODO 用户校验工作
 				TcpUser user = getTcpUserByMac(mac);
 				if(DataTypeUtil.isNotEmpty(user)){
-					response.setState((byte)0);
+					response.setState((byte)1);
 					ClientManager.addClient(ctx, user);
 				}else{
-					response.setState((byte)1);
+					response.setState((byte)0);
 					response.setErrormsg("mac校验错误");
 				}
 				TCPServer.getSingletonInstance().sendWithoutCache(response);

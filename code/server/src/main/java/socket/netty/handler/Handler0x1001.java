@@ -27,7 +27,8 @@ public class Handler0x1001 implements IHandler {
 	public void doHandle(AbsMsg m, ChannelHandlerContext ctx) {
 		try {
 			if (m instanceof MSG_0x1001) {
-				logger.info("位置请求:"+m.getHead().getMac());
+				MSG_0x1001 msg = (MSG_0x1001) m;
+				logger.info("位置请求:"+msg.toString());
 				//通用应答
 				MSG_0x3003 response = new MSG_0x3003();
 				response.setMsgid(m.getHead().getMsgid());

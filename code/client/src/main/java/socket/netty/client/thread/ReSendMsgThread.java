@@ -55,6 +55,7 @@ public class ReSendMsgThread extends AbsThread {
 
 	@Override
 	public void runThread(long delay, long period) {
+		timer = new Timer();
 		try {
 			timer.schedule(new TimerTask() {
 

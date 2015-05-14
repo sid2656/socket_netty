@@ -26,6 +26,12 @@ public class MSG_0x0003 extends AbsMsg {
 	private String errormsg="";
 
 	@Override
+	public String toString() {
+		return "MSG_0x0003 [logger=" + logger + ", msgid=" + msgid + ", state="
+				+ state + ", errormsg=" + errormsg + ", head=" + head + "]";
+	}
+
+	@Override
 	protected int getMsgID() {
 		return MessageID.MSG_0x0003;
 	}
@@ -40,7 +46,7 @@ public class MSG_0x0003 extends AbsMsg {
 		byte[] data = new byte[getBodylen()];
 		try {
 			int offset = 0;
-			System.arraycopy(Converter.toByteArray(this.msgid), 0, data, offset, 2);
+			System.arraycopy(Converter.toByteArray16Int(this.msgid), 0, data, offset, 2);
 			offset+=2;
 			data[offset]=state;
 			offset+=1;

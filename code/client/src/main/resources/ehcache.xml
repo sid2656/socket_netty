@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html SYSTEM "file:///E:\driverServer\code\xmlspec.dtd">
+<!-- <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/2002/xmlspec/dtd/2.10/xmlspec.dtd"> -->
+
+<ehcache name="MainCache" updateCheck="false">
+    
+    <diskStore path="java.io.tmpdir"/>
+    
+    
+    <!-- name:缓存名称。
+     	maxElementsInMemory：缓存最大个数。 
+     	eternal:对象是否永久有效，一但设置了，timeout将不起作用。 
+		timeToIdleSeconds：设置对象在失效前的允许闲置时间（单位：秒）。仅当eternal=false对象不是永久有效时使用，可选属性，默认值是0，也就是可闲置时间无穷大。 
+		timeToLiveSeconds：设置对象在失效前允许存活时间（单位：秒）。最大时间介于创建时间和失效时间之间。仅当eternal=false对象不是永久有效时使用，默认是0.，也就是对象存活时间无穷大。 
+		overflowToDisk：当内存中对象数量达到maxElementsInMemory时，Ehcache将会对象写到磁盘中。
+		diskSpoolBufferSizeMB：这个参数设置DiskStore（磁盘缓存）的缓存区大小。默认是30MB。每个Cache都应该有自己的一个缓冲区。 
+		maxElementsOnDisk：硬盘最大缓存个数。 diskPersistent：是否缓存虚拟机重启期数据 Whether the disk store persists between restarts of the Virtual Machine. The default value is false. 
+		diskExpiryThreadIntervalSeconds：磁盘失效线程运行时间间隔，默认是120秒。 
+		memoryStoreEvictionPolicy：当达到maxElementsInMemory限制时，Ehcache将会根据指定的策略去清理内存。默认策略是LRU（最近最少使用）。你可以设置为FIFO（先进先出）或是LFU（较少使用）。 
+		clearOnFlush：内存数量最大时是否清除。 -->
+		
+	<defaultCache maxElementsInMemory="10000" eternal="false"
+		timeToIdleSeconds="600" timeToLiveSeconds="600" diskSpoolBufferSizeMB="30"
+		maxElementsOnDisk="10000000" diskExpiryThreadIntervalSeconds="120">
+		<cacheDecoratorFactory class="utils.cache.ehcache.factory.DecoratedCacheFactory"  
+		      properties="cacheName=default" />
+		<cacheExceptionHandlerFactory class="utils.cache.ehcache.factory.ExceptionHandlerCacheFactory"
+              properties="cacheName=default"/>
+		<persistence strategy="localTempSwap" />
+	</defaultCache>
+
+	<cache name="msgcache" maxElementsInMemory="100000"
+		maxElementsOnDisk="0" eternal="false" overflowToDisk="false"
+		timeToIdleSeconds="600" timeToLiveSeconds="600" diskPersistent="false"
+		memoryStoreEvictionPolicy="LFU">
+		<cacheDecoratorFactory class="utils.cache.ehcache.factory.DecoratedCacheFactory"  
+		      properties="cacheName=msgcache"/>
+		<cacheExceptionHandlerFactory class="utils.cache.ehcache.factory.ExceptionHandlerCacheFactory"
+              properties="cacheName=msgcache"/>
+		<!-- 暂时没有用到，先注释 <cacheEventListenerFactory class="utils.cache.ehcache.factory.MainCacheEventListenerFactory" 
+			properties="cacheName=msgCache" /> -->
+
+	</cache>
+<!-- 
+	<cache name="ordercache" maxElementsInMemory="100000"
+		maxElementsOnDisk="0" eternal="false" overflowToDisk="true"
+		timeToIdleSeconds="6000" timeToLiveSeconds="6000" diskPersistent="true"
+		diskSpoolBufferSizeMB="1024" memoryStoreEvictionPolicy="LFU">
+		<cacheDecoratorFactory class="utils.cache.ehcache.factory.DecoratedCacheFactory"  
+		      properties="cacheName=ordercache" />
+		<cacheExceptionHandlerFactory class="utils.cache.ehcache.factory.ExceptionHandlerCacheFactory"
+              properties="cacheName=ordercache"/>
+
+	</cache>
+
+	<cache name="orderstatecache" maxElementsInMemory="100000"
+		maxElementsOnDisk="0" eternal="false" overflowToDisk="true"
+		timeToIdleSeconds="6000" timeToLiveSeconds="6000" diskPersistent="true"
+		diskSpoolBufferSizeMB="1024" memoryStoreEvictionPolicy="LFU">
+		<cacheDecoratorFactory class="utils.cache.ehcache.factory.DecoratedCacheFactory"  
+		      properties="cacheName=orderstatecache" />
+		<cacheExceptionHandlerFactory class="utils.cache.ehcache.factory.ExceptionHandlerCacheFactory"
+              properties="cacheName=orderstatecache"/>
+
+	</cache>
+
+	<cache name="driverordersuccesscache" maxElementsInMemory="100000"
+		maxElementsOnDisk="0" eternal="false" overflowToDisk="true"
+		timeToIdleSeconds="864000" timeToLiveSeconds="864000" diskPersistent="true"
+		diskSpoolBufferSizeMB="1024" memoryStoreEvictionPolicy="LFU">
+		<cacheDecoratorFactory class="utils.cache.ehcache.factory.DecoratedCacheFactory"  
+		      properties="cacheName=driverordersuccesscache" />
+		<cacheExceptionHandlerFactory class="utils.cache.ehcache.factory.ExceptionHandlerCacheFactory"
+              properties="cacheName=driverordersuccesscache"/>
+
+	</cache>
+
+	<cache name="driveracceptordercache" maxElementsInMemory="100000"
+		maxElementsOnDisk="0" eternal="false" overflowToDisk="true"
+		timeToIdleSeconds="864000" timeToLiveSeconds="864000" diskPersistent="true"
+		diskSpoolBufferSizeMB="1024" memoryStoreEvictionPolicy="LFU">
+		<cacheDecoratorFactory class="utils.cache.ehcache.factory.DecoratedCacheFactory"  
+		      properties="cacheName=driveracceptordercache" />
+		<cacheExceptionHandlerFactory class="utils.cache.ehcache.factory.ExceptionHandlerCacheFactory"
+              properties="cacheName=driveracceptordercache"/>
+
+	</cache>
+
+	<cache name="driverstatecache" maxElementsInMemory="100000"
+		maxElementsOnDisk="0" eternal="false" overflowToDisk="true"
+		timeToIdleSeconds="864000" timeToLiveSeconds="864000" diskPersistent="true"
+		diskSpoolBufferSizeMB="1024" memoryStoreEvictionPolicy="LFU">
+		<cacheDecoratorFactory class="utils.cache.ehcache.factory.DecoratedCacheFactory"  
+		      properties="cacheName=driverstatecache" />
+		<cacheExceptionHandlerFactory class="utils.cache.ehcache.factory.ExceptionHandlerCacheFactory"
+              properties="cacheName=driverstatecache"/>
+	</cache>
+
+	<cache name="driverplatenumcache" maxElementsInMemory="100000"
+		maxElementsOnDisk="0" eternal="false" overflowToDisk="true"
+		timeToIdleSeconds="864000" timeToLiveSeconds="864000" diskPersistent="true"
+		diskSpoolBufferSizeMB="1024" memoryStoreEvictionPolicy="LFU">
+		<cacheDecoratorFactory class="utils.cache.ehcache.factory.DecoratedCacheFactory"  
+		      properties="cacheName=driverplatenumcache" />
+		<cacheExceptionHandlerFactory class="utils.cache.ehcache.factory.ExceptionHandlerCacheFactory"
+              properties="cacheName=driverplatenumcache"/>
+	</cache>
+
+	<cache name="driveronlinestatecache" maxElementsInMemory="100000"
+		maxElementsOnDisk="0" eternal="false" overflowToDisk="true"
+		timeToIdleSeconds="864000" timeToLiveSeconds="864000" diskPersistent="true"
+		diskSpoolBufferSizeMB="1024" memoryStoreEvictionPolicy="LFU">
+		<cacheDecoratorFactory class="utils.cache.ehcache.factory.DecoratedCacheFactory"  
+		      properties="cacheName=driveronlinestatecache" />
+		<cacheExceptionHandlerFactory class="utils.cache.ehcache.factory.ExceptionHandlerCacheFactory"
+              properties="cacheName=driveronlinestatecache"/>
+
+	</cache>
+	<cache name="treecache" maxElementsInMemory="100000"
+		maxElementsOnDisk="0" eternal="true" overflowToDisk="false"
+		timeToIdleSeconds="120" timeToLiveSeconds="0" diskPersistent="false"
+		memoryStoreEvictionPolicy="LFU">
+		<cacheDecoratorFactory class="utils.cache.ehcache.factory.DecoratedCacheFactory"  
+		      properties="cacheName=treecache" />
+		<cacheExceptionHandlerFactory class="utils.cache.ehcache.factory.ExceptionHandlerCacheFactory"
+              properties="cacheName=treecache"/>
+
+	</cache>
+
+	订单轨迹缓存
+	<cache name="trackcache" maxElementsInMemory="100000"
+		maxElementsOnDisk="0" eternal="true" overflowToDisk="true"
+		timeToIdleSeconds="120" timeToLiveSeconds="0" diskPersistent="true"
+		diskSpoolBufferSizeMB="1024" memoryStoreEvictionPolicy="LFU">
+		<cacheDecoratorFactory class="utils.cache.ehcache.factory.DecoratedCacheFactory"  
+		      properties="cacheName=trackcache" />
+		<cacheExceptionHandlerFactory class="utils.cache.ehcache.factory.ExceptionHandlerCacheFactory"
+              properties="cacheName=trackcache"/>
+
+	</cache>
+
+	车辆位置缓存
+	<cache name="carpasitioncache" maxElementsInMemory="100000"
+		maxElementsOnDisk="0" eternal="true" overflowToDisk="true"
+		timeToIdleSeconds="864000" timeToLiveSeconds="864000" diskPersistent="true"
+		diskSpoolBufferSizeMB="1024" memoryStoreEvictionPolicy="LFU">
+		<cacheDecoratorFactory class="utils.cache.ehcache.factory.DecoratedCacheFactory"  
+		      properties="cacheName=carpasitioncache" />
+		<cacheExceptionHandlerFactory class="utils.cache.ehcache.factory.ExceptionHandlerCacheFactory"
+              properties="cacheName=carpasitioncache"/>
+
+	</cache> -->
+
+</ehcache>

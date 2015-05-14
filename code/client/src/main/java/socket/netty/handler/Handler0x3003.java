@@ -6,8 +6,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import socket.netty.cache.MsgCache;
+import socket.netty.client.TcpClient;
 import socket.netty.msg.AbsMsg;
 import socket.netty.msg.MSG_0x3003;
+import socket.netty.msg.MessageID;
 
 /**
  * 
@@ -25,11 +27,13 @@ public class Handler0x3003 implements IHandler {
 				MSG_0x3003 msg = (MSG_0x3003)m;
 				//去除消息缓存
 				MsgCache.getInstance().remove(msg.getMsgid()+";"+msg.getHead().getSeq());
+				if(msg.getMsgid()==MessageID.MSG_0x0001&&msg.getState()==1)
+					TcpClient.getInstance().loginOK(true);
 			} else {
-				logger.error("登录消息强转失败:"+m.toString());
+				logger.error("通用应答消息强转失败:"+m.toString());
 			}
 		} catch (Exception e) {
-			logger.error("登录消息处理失败"+e);
+			logger.error("通用应答处理失败"+e);
 		}
 	}
 

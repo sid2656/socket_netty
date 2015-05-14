@@ -17,6 +17,13 @@ public class MSG_0x0002 extends AbsMsg {
 
 	private static final long serialVersionUID = 1L;
 
+	
+	
+	@Override
+	public String toString() {
+		return "MSG_0x0002 [head=" + head + "]";
+	}
+
 	@Override
 	protected int getMsgID() {
 		return MessageID.MSG_0x0002;
@@ -29,7 +36,7 @@ public class MSG_0x0002 extends AbsMsg {
 
 	@Override
 	protected byte[] bodytoBytes() {
-		return null;
+		return new byte[0];
 	}
 
 	@Override

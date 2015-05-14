@@ -37,7 +37,7 @@ public class MsgFactory {
 		
 		ByteBuffer bf = ByteBuffer.wrap(msgbytes);
 		logger.info("处理消息："+Converter.bytes2HexsSpace(msgbytes));
-		int bodylen = msgbytes.length-Constants.HEAD_LENGTH-Constants.SIGN_LENGTH;//去掉消息头和标志位长度
+		int bodylen = msgbytes.length-Constants.HEAD_LENGTH-Constants.SIGN_LENGTH;//去掉消息头和校验码长度
 		byte[] body = new byte[bodylen];
 		bf.position(Constants.HEAD_LENGTH+Constants.SIGN_STAR_LENGTH-1);//下标从0开始
 		bf.get(body);

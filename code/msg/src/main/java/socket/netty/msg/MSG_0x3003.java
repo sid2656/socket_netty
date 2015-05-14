@@ -26,6 +26,12 @@ public class MSG_0x3003 extends AbsMsg {
 	private String errormsg="";
 
 	@Override
+	public String toString() {
+		return "MSG_0x3003 [logger=" + logger + ", msgid=" + msgid + ", state="
+				+ state + ", errormsg=" + errormsg + ", head=" + head + "]";
+	}
+
+	@Override
 	protected int getMsgID() {
 		return MessageID.MSG_0x3003;
 	}
@@ -40,7 +46,7 @@ public class MSG_0x3003 extends AbsMsg {
 		byte[] data = new byte[getBodylen()];
 		try {
 			int offset = 0;
-			System.arraycopy(Converter.toByteArray(this.msgid), 0, data, offset, 2);
+			System.arraycopy(Converter.toByteArray16Int(this.msgid), 0, data, offset, 2);
 			offset+=2;
 			data[offset]=state;
 			offset+=1;
@@ -61,7 +67,9 @@ public class MSG_0x3003 extends AbsMsg {
 			offset+=2;
 			this.state = data[offset];
 			offset += 1;
-			this.errormsg = Converter.toGBKString(data, offset, data.length-offset);
+			if(this.state==0){
+				this.errormsg = Converter.toGBKString(data, offset, data.length-offset);
+			}
 			resultState = true;
 		} catch (Exception e) {
 			LogUtil.getInstance().getLogger(MSG_0x0001.class).error("登录消息fromBytes转换异常",e);

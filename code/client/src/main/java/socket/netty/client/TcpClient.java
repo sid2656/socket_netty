@@ -21,6 +21,7 @@ import socket.netty.client.thread.ReConnectedThread;
 import socket.netty.client.thread.ReSendMsgThread;
 import socket.netty.msg.AbsMsg;
 import socket.netty.msg.MSG_0x0001;
+import socket.netty.msg.MSG_0x1001;
 import utils.soket.msg.Converter;
 import utils.soket.msg.TCPCodec;
 import utils.utils.PropertiesUtil;
@@ -56,7 +57,7 @@ public class TcpClient extends Thread {
 	public ChannelFuture cf;
 
 	private int heartbeatdelay = Integer.parseInt(PropertiesUtil
-			.getProperties().getProperty("tcp.heartbeatdelay"));// 心跳间隔
+			.getProperties().getProperty("tcp.heartbeat"));// 心跳间隔
 	private int reconnectdealy = Integer.parseInt(PropertiesUtil
 			.getProperties().getProperty("tcp.reconnectdealy"));
 	private int resendmsgdealy = Integer.parseInt(PropertiesUtil
@@ -129,6 +130,9 @@ public class TcpClient extends Thread {
 			ReSendMsgThread.getInstance().run(0,this.resendmsgdealy * 1000);
 			HeartBeatThread.getInstance().run(0,this.heartbeatdelay * 1000);
 			logger.info("client线程启动成功");
+			MSG_0x1001 msg = new MSG_0x1001();
+			msg.setId("123456789012345678");
+			TcpClient.getInstance().send(msg);
 		}
 	}
 
